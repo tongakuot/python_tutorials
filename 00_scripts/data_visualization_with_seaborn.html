@@ -122,7 +122,11 @@
 <blockquote class="blockquote">
 <p>Seaborn is a Python data visualization library based on <a href="https://matplotlib.org/">matplotlib</a>. It provides a high-level interface for drawing attractive and informative statistical graphics. <em>(https://seaborn.pydata.org/)</em></p>
 </blockquote>
+<<<<<<< HEAD
 <p>In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by <strong>Gary-Gregoire Coquillo’s</strong> February 5, 2020 post on <code>LinkedIn</code>. A Copy of <strong>Gary-Gregoire’s article is located here: https://github.com/tongakuot/python_tutorials/blob/main/Exploring%20Seaborn%E2%80%99s%20Built-in%20Dataset.pdf.</strong></p>
+=======
+<p>In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by <strong>Gary-Gregoire Coquillo’s</strong> February 5, 2020 post on <code>LinkedIn</code>. A Copy of <strong>Gary-Gregoire’s article is located here: 00_images/Exploring Seaborn’s Built-in Dataset.pdf.</strong></p>
+>>>>>>> 7739521e163d4374581209de69b66aaf81584832
 <p>Now let’s get started.</p>
 <section id="loading-the-libraries" class="level3">
 <h3 class="anchored" data-anchor-id="loading-the-libraries">Loading the Libraries</h3>
@@ -807,6 +811,7 @@ dtype: int64</code></pre>
 <div class="cell" data-execution_count="17">
 <details>
 <summary>Code</summary>
+<<<<<<< HEAD
 <div class="sourceCode" id="cb18"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                  y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                  data <span class="op">=</span> tips_df,</span>
@@ -828,6 +833,21 @@ dtype: int64</code></pre>
 </details>
 <div class="cell-output-display">
 <p><img src="data_visualization_with_seaborn_files/figure-html/cell-18-output-1.png" width="464" height="464"></p>
+=======
+<div class="sourceCode" id="cb18"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a swarm plot</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sns.swarmplot(x <span class="op">=</span> <span class="st">'day'</span>, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>              y <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>              color <span class="op">=</span><span class="st">"k"</span>, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>              size <span class="op">=</span> <span class="dv">3</span>, </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>              data <span class="op">=</span> tips_df</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-18-output-1.png" width="589" height="428"></p>
+>>>>>>> 7739521e163d4374581209de69b66aaf81584832
 </div>
 </div>
 <div class="cell" data-execution_count="18">
@@ -870,6 +890,7 @@ dtype: int64</code></pre>
 <p><img src="data_visualization_with_seaborn_files/figure-html/cell-20-output-1.png" width="1025" height="463"></p>
 </div>
 </div>
+<<<<<<< HEAD
 <div class="cell" data-execution_count="20">
 <details>
 <summary>Code</summary>
@@ -885,6 +906,8 @@ dtype: int64</code></pre>
 <p><img src="data_visualization_with_seaborn_files/figure-html/cell-21-output-1.png" width="556" height="560"></p>
 </div>
 </div>
+=======
+>>>>>>> 7739521e163d4374581209de69b66aaf81584832
 </section>
 </section>
 </main>

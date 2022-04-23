@@ -34,7 +34,11 @@ And why `seaborn`?
 
 > Seaborn is a Python data visualization library based on [matplotlib](https://matplotlib.org/). It provides a high-level interface for drawing attractive and informative statistical graphics. *(https://seaborn.pydata.org/)*
 
+<<<<<<< HEAD
 In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by **Gary-Gregoire Coquillo's** February 5, 2020 post on `LinkedIn`. A Copy of **Gary-Gregoire's article is located here: https://github.com/tongakuot/python_tutorials/blob/main/Exploring%20Seaborn%E2%80%99s%20Built-in%20Dataset.pdf.**
+=======
+In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by **Gary-Gregoire Coquillo's** February 5, 2020 post on `LinkedIn`. A Copy of **Gary-Gregoire's article is located here: 00_images/Exploring Seaborn's Built-in Dataset.pdf.**
+>>>>>>> 7739521e163d4374581209de69b66aaf81584832
 
 Now let's get started.
 
@@ -275,6 +279,7 @@ g = sns.catplot(x = 'day',
                   inner = None
                 )
                 
+
 # Plot a swarm plot
 sns.swarmplot(x = 'day', 
               y = 'total_bill', 
@@ -282,6 +287,7 @@ sns.swarmplot(x = 'day',
               size = 3, 
               data = tips_df,
               ax = g.ax
+              data = tips_df
             )
             
 # Display the plot
@@ -317,6 +323,7 @@ g = sns.lmplot(x = 'total_bill',
 plt.show()
 ```
 
+
 ```{python}
 sns.jointplot(x = 'total_bill', 
               y = 'tip', 
@@ -326,3 +333,4 @@ sns.jointplot(x = 'total_bill',
 # Display the plot
 plt.show()
 ```
+
