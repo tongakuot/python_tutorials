@@ -1,0 +1,310 @@
+---
+title: "Data Visualization with Seaborn"
+author: "Alier Reng"
+format: 
+  html:
+    code-fold: true
+editor: visual
+jupyter: python3
+---
+
+## Visualizing the tips Dataset with Seaborn
+
+This tutorial serves two purposes: 1) showcase `Quarto`, the next generation of `RMarkdown`, and 2) illustrate how to visualize data in **Python** with `seaborn`.
+
+So, why `Quarto`?
+
+According to its website, *quarto.org*, `Quarto` *"is an open-source scientific and technical publishing system built on [Pandoc](https://pandoc.org/)."*
+
+`Quarto` enables data scientists and analysts to:
+
+-   Create dynamic content with [Python](https://quarto.org/docs/computations/python.html), [R](https://quarto.org/docs/computations/r.html), [Julia](https://quarto.org/docs/computations/julia.html), and [Observable](https://quarto.org/docs/computations/ojs.html);
+
+<!-- -->
+
+-   Author documents as plain text markdown or [Jupyter](https://jupyter.org/) notebooks;
+
+-   Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more; and
+
+-   Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more. ***(https://quarto.org/)***
+
+And why `seaborn`?
+
+`Seaborn` is a **Python** data visualization library built on top of `matplotlib`.
+
+> Seaborn is a Python data visualization library based on [matplotlib](https://matplotlib.org/). It provides a high-level interface for drawing attractive and informative statistical graphics. *(https://seaborn.pydata.org/)*
+
+In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by **Gary-Gregoire Coquillo's** February 5, 2020 post on `LinkedIn`. A Copy of **Gary-Gregoire's article is located here: 00_images/Exploring Seaborn's Built-in Dataset.pdf.**
+
+Now let's get started.
+
+### Loading the Libraries
+
+Here we will load `seaborn`, `matplotlib`, `pandas`, and `numpy`.
+
+```{python}
+# Import libraries
+import pandas as pd
+import numpy as np
+# Install and load the seaborn package
+#!pip install seaborn; the alias "sns" stands for Samuel Norman Seaborn from "The West Wing" television show
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Initialize seaborn styling; context
+sns.set_style('white')
+sns.set_context('notebook')
+```
+
+### Loading the Dataset
+
+In this tutorial, we will use the `tips` dataset for our purpose.
+
+```{python}
+tips_df = sns.load_dataset('tips')
+```
+
+### Inspecting the data
+
+```{python}
+# Inspect the first 5 rows.
+tips_df.head()
+```
+
+```{python}
+# Inspect the last 5 rows.
+tips_df.tail()
+```
+
+### Checking for Missing Values
+
+```{python}
+# Check if there are missing values.
+tips_df.isna().sum()
+```
+
+There are no missing values.
+
+### Performing a Quick Summary
+
+```{python}
+# Summarizing the data to get better understanding of our dataset; transpose the results for better view.
+tips_df.describe().T
+```
+
+```{python}
+# Group by sex and smoker columns; compute the mean and round to 2 decimal places
+
+# Select desired columns.
+cols = ['sex', 'smoker', 'day', 'total_bill', 'tip']
+
+df_1 = (tips_df
+       [cols]
+       .groupby(['sex', 'smoker', 'day'])
+       .mean()
+       .round(2)
+)
+
+# View the outputa
+df_1
+
+
+```
+
+```{python}
+# Group by sex and smoker columns; compute the mean and round to 2 decimal places.
+df_2 = (tips_df
+        [cols]
+        .groupby(['sex', 'smoker'])
+        .mean()
+        .round(2)
+)
+
+# View the outputa
+df_2
+```
+
+```{python}
+# Group by the sex column; compute the mean and round to 2 decimal places
+df_3 = (tips_df
+        [cols]
+        .groupby(['sex'])
+        .mean()
+        .round(2)
+)
+
+# View the outputa
+df_3
+```
+
+### Visualizing Data with `seaborn`
+
+Let's begin with the `scatterplot`. However, we will use `relplot` instead of `scatterplot` because the `relplot` allows us to create subplots in a single figure.
+
+```{python}
+# Plot a scatterplot with the relplot() function
+sc_g = sns.relplot(x = 'total_bill', 
+            y = 'tip',
+            data = tips_df,
+            kind = 'scatter',
+            hue = 'smoker',
+            style = 'smoker'
+          )
+ 
+# Add the title
+sc_g.figure.suptitle('Tip vs Total Bill')
+sc_g.set(xlabel = 'Total Bill',
+         ylabel = 'Tip')
+         
+# Show the plot.
+plt.show()
+```
+
+### Plotting the Bargraph
+
+```{python}
+# Plot the countplot.
+count_g = sns.catplot(
+    x = 'sex',
+    data = tips_df,
+    kind = 'count'
+)
+
+count_g.figure.suptitle('Countplot by Sex')
+plt.show()
+```
+
+```{python}
+bar_g = sns.catplot(x = 'day',
+                    y = 'total_bill',
+                    data = tips_df,
+                    kind = 'bar'
+                  )
+# Add the title
+bar_g.figure.suptitle('Total Bill by Days of the Week')
+bar_g.set(xlabel = 'Days of the Week',
+          ylabel = 'Total Bill')
+
+plt.show()
+```
+
+### Plotting the Boxplot
+
+```{python}
+bp_g = sns.catplot(x = 'total_bill',
+                   y = 'time',
+                   data = tips_df,
+                   kind = 'box',
+                   order = ['Dinner', 'Lunch']
+                  )
+
+# Add the title
+bp_g.figure.suptitle('Total Bill by Time of the Day')
+bp_g.set(xlabel = 'Total Bill',
+          ylabel = 'Time of the Day')
+          
+plt.show()
+```
+
+### Plotting the Boxplot without Outliers
+
+```{python}
+bp_g = sns.catplot(x = 'total_bill',
+                   y = 'time',
+                   data = tips_df,
+                   kind = 'box',
+                   order = ['Dinner', 'Lunch'],
+                   sym = ''
+                  )
+
+# Formatting the plot
+bp_g.figure.suptitle('Total Bill by Time of the Day')
+bp_g.set(xlabel = 'Total Bill',
+          ylabel = 'Time of the Day')
+          
+# Display the plot
+plt.show()
+```
+
+```{python}
+# Boxplot by smoker column.
+b_hue_g = sns.catplot(x = 'day',
+                      y = 'total_bill',
+                      data = tips_df,
+                      kind = 'box',
+                      sym = '',
+                      hue = 'smoker'
+                  )
+
+# Formatting the plot
+b_hue_g.figure.suptitle('Total Bill by Days of the Week')
+b_hue_g.set(xlabel = 'Day of the Week',
+            ylabel = 'Total Bill')
+          
+# Display the plot
+plt.show()
+```
+
+### Plotting the Violin Plot
+
+```{python}
+# Plot a Violin Plot.
+v_g = sns.catplot(x = 'day',
+                  y = 'total_bill',
+                  data = tips_df,
+                  kind = 'violin',
+                  hue = 'sex'
+                )
+                    
+# Formatting
+v_g.figure.suptitle("Total Bill by Days of the Week")
+v_g.set(xlabel = 'Days of the Week',
+        ylabel = 'Total Bill')
+  
+# Display the plot      
+plt.show()
+```
+
+### Plotting the Swarmplot
+
+```{python}
+# Plot a swarm plot
+sns.swarmplot(x = 'day', 
+              y = 'total_bill', 
+              color ="k", 
+              size = 3, 
+              data = tips_df
+            )
+            
+# Display the plot
+plt.show()
+```
+
+```{python}
+# Plot a swarm plot
+sns.catplot(x = 'day', 
+            y = 'total_bill', 
+            col = 'time', 
+            aspect = .8, 
+            data = tips_df,
+            kind = 'swarm',
+            hue = 'smoker'
+            )
+            
+# Display the plot
+plt.show()
+```
+
+### Plotting the Linear Regression Plot
+
+```{python}
+# Plot histogram
+g = sns.lmplot(x = 'total_bill', 
+               y = 'tip', 
+               hue = 'smoker',
+               col = 'time',
+               data = tips_df,
+               markers = ['o', '*'], 
+               palette = 'Set1');
+plt.show()
+```
