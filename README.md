@@ -1,2 +1,2 @@
-# python_n_r_tutorials
-Python and R Tutorials repo is where I share tutorials on data science with R and Python.
+# Python Tutorials
+Python Tutorials repo is where I share tutorials on data science and analytics with Python, Python hints and best practices.
