@@ -109,10 +109,7 @@
 <p>According to its website, <em>quarto.org</em>, <code>Quarto</code> <em>“is an open-source scientific and technical publishing system built on <a href="https://pandoc.org/">Pandoc</a>.”</em></p>
 <p><code>Quarto</code> enables data scientists and analysts to:</p>
 <ul>
-<li>Create dynamic content with <a href="https://quarto.org/docs/computations/python.html">Python</a>, <a href="https://quarto.org/docs/computations/r.html">R</a>, <a href="https://quarto.org/docs/computations/julia.html">Julia</a>, and <a href="https://quarto.org/docs/computations/ojs.html">Observable</a>;</li>
-</ul>
-<!-- -->
-<ul>
+<li><p>Create dynamic content with <a href="https://quarto.org/docs/computations/python.html">Python</a>, <a href="https://quarto.org/docs/computations/r.html">R</a>, <a href="https://quarto.org/docs/computations/julia.html">Julia</a>, and <a href="https://quarto.org/docs/computations/ojs.html">Observable</a>;</p></li>
 <li><p>Author documents as plain text markdown or <a href="https://jupyter.org/">Jupyter</a> notebooks;</p></li>
 <li><p>Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more; and</p></li>
 <li><p>Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more. <strong><em>(https://quarto.org/)</em></strong></p></li>
@@ -122,11 +119,6 @@
 <blockquote class="blockquote">
 <p>Seaborn is a Python data visualization library based on <a href="https://matplotlib.org/">matplotlib</a>. It provides a high-level interface for drawing attractive and informative statistical graphics. <em>(https://seaborn.pydata.org/)</em></p>
 </blockquote>
-<<<<<<< HEAD
-<p>In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by <strong>Gary-Gregoire Coquillo’s</strong> February 5, 2020 post on <code>LinkedIn</code>. A Copy of <strong>Gary-Gregoire’s article is located here: https://github.com/tongakuot/python_tutorials/blob/main/Exploring%20Seaborn%E2%80%99s%20Built-in%20Dataset.pdf.</strong></p>
-=======
-<p>In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by <strong>Gary-Gregoire Coquillo’s</strong> February 5, 2020 post on <code>LinkedIn</code>. A Copy of <strong>Gary-Gregoire’s article is located here: 00_images/Exploring Seaborn’s Built-in Dataset.pdf.</strong></p>
->>>>>>> 7739521e163d4374581209de69b66aaf81584832
 <p>Now let’s get started.</p>
 <section id="loading-the-libraries" class="level3">
 <h3 class="anchored" data-anchor-id="loading-the-libraries">Loading the Libraries</h3>
@@ -150,7 +142,7 @@
 </section>
 <section id="loading-the-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="loading-the-dataset">Loading the Dataset</h3>
-<p>In this tutorial, we will use the <code>tips</code> dataset for our purpose.</p>
+<p>In this tutorial, we will use the <code>tips</code> dataset.</p>
 <div class="cell" data-execution_count="2">
 <details>
 <summary>Code</summary>
@@ -166,7 +158,7 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the first 5 rows.</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tips_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="3">
+<div class="cell-output-display" data-execution_count="25">
 <div>
 
 <table class="dataframe table table-sm table-striped">
@@ -244,7 +236,7 @@
 <div class="sourceCode" id="cb4"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the last 5 rows.</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tips_df.tail()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="4">
+<div class="cell-output-display" data-execution_count="26">
 <div>
 
 <table class="dataframe table table-sm table-striped">
@@ -325,7 +317,7 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if there are missing values.</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tips_df.isna().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="5">
+<div class="cell-output-display" data-execution_count="27">
 <pre><code>total_bill    0
 tip           0
 sex           0
@@ -346,7 +338,7 @@ dtype: int64</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarizing the data to get better understanding of our dataset; transpose the results for better view.</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>tips_df.describe().T</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="6">
+<div class="cell-output-display" data-execution_count="28">
 <div>
 
 <table class="dataframe table table-sm table-striped">
@@ -420,7 +412,7 @@ dtype: int64</code></pre>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># View the outputa</span></span>
 <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>df_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="7">
+<div class="cell-output-display" data-execution_count="29">
 <div>
 
 <table class="dataframe table table-sm table-striped">
@@ -546,7 +538,7 @@ dtype: int64</code></pre>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># View the outputa</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>df_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="8">
+<div class="cell-output-display" data-execution_count="30">
 <div>
 
 <table class="dataframe table table-sm table-striped">
@@ -606,7 +598,7 @@ dtype: int64</code></pre>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># View the outputa</span></span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>df_3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display" data-execution_count="9">
+<div class="cell-output-display" data-execution_count="31">
 <div>
 
 <table class="dataframe table table-sm table-striped">
@@ -666,248 +658,287 @@ dtype: int64</code></pre>
 <p><img src="data_visualization_with_seaborn_files/figure-html/cell-11-output-1.png" width="540" height="472"></p>
 </div>
 </div>
-</section>
-<section id="plotting-the-bargraph" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-the-bargraph">Plotting the Bargraph</h3>
 <div class="cell" data-execution_count="11">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the countplot.</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>count_g <span class="op">=</span> sns.catplot(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="st">'sex'</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> tips_df,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    kind <span class="op">=</span> <span class="st">'count'</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>count_g.figure.suptitle(<span class="st">'Countplot by Sex'</span>)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a scatterplot with the relplot() function</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sc_g <span class="op">=</span> sns.relplot(x <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>            y <span class="op">=</span> <span class="st">'tip'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            data <span class="op">=</span> tips_df,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            kind <span class="op">=</span> <span class="st">'scatter'</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            hue <span class="op">=</span> <span class="st">'smoker'</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            col <span class="op">=</span> <span class="st">'time'</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            style <span class="op">=</span> <span class="st">'smoker'</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the title</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>sc_g.figure.suptitle(<span class="st">'Tip vs Total Bill'</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>sc_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Total Bill'</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>         ylabel <span class="op">=</span> <span class="st">'Tip'</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the plot.</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-12-output-1.png" width="464" height="472"></p>
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-12-output-1.png" width="1025" height="472"></p>
 </div>
 </div>
+</section>
+<section id="plotting-categorical-plots" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-categorical-plots">Plotting Categorical Plots</h3>
+<p>Here we will use the <code>catplot()</code> function because it enables us to create subplots with <code>col=</code> and <code>row=</code> easily.</p>
 <div class="cell" data-execution_count="12">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bar_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                    y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                    data <span class="op">=</span> tips_df,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                    kind <span class="op">=</span> <span class="st">'bar'</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                  )</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the title</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>bar_g.figure.suptitle(<span class="st">'Total Bill by Days of the Week'</span>)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>bar_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Days of the Week'</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>          ylabel <span class="op">=</span> <span class="st">'Total Bill'</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the countplot.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>count_g <span class="op">=</span> sns.catplot(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="st">'sex'</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> tips_df,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    kind <span class="op">=</span> <span class="st">'count'</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>count_g.figure.suptitle(<span class="st">'Countplot by Sex'</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="data_visualization_with_seaborn_files/figure-html/cell-13-output-1.png" width="464" height="472"></p>
 </div>
 </div>
-</section>
-<section id="plotting-the-boxplot" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-the-boxplot">Plotting the Boxplot</h3>
 <div class="cell" data-execution_count="13">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bp_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                   y <span class="op">=</span> <span class="st">'time'</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                   data <span class="op">=</span> tips_df,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                   kind <span class="op">=</span> <span class="st">'box'</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                   order <span class="op">=</span> [<span class="st">'Dinner'</span>, <span class="st">'Lunch'</span>]</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                  )</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the title</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>bp_g.figure.suptitle(<span class="st">'Total Bill by Time of the Day'</span>)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>bp_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Total Bill'</span>,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>          ylabel <span class="op">=</span> <span class="st">'Time of the Day'</span>)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the countplot.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>count_g <span class="op">=</span> sns.catplot(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="st">'smoker'</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> tips_df,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    kind <span class="op">=</span> <span class="st">'count'</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    hue <span class="op">=</span> <span class="st">'sex'</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>count_g.figure.suptitle(<span class="st">'Countplot by Smoker'</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-14-output-1.png" width="464" height="472"></p>
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-14-output-1.png" width="560" height="472"></p>
 </div>
 </div>
-</section>
-<section id="plotting-the-boxplot-without-outliers" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-the-boxplot-without-outliers">Plotting the Boxplot without Outliers</h3>
 <div class="cell" data-execution_count="14">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bp_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                   y <span class="op">=</span> <span class="st">'time'</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                   data <span class="op">=</span> tips_df,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                   kind <span class="op">=</span> <span class="st">'box'</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                   order <span class="op">=</span> [<span class="st">'Dinner'</span>, <span class="st">'Lunch'</span>],</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                   sym <span class="op">=</span> <span class="st">''</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                  )</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Formatting the plot</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>bp_g.figure.suptitle(<span class="st">'Total Bill by Time of the Day'</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>bp_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Total Bill'</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>          ylabel <span class="op">=</span> <span class="st">'Time of the Day'</span>)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>bar_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                    y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                    data <span class="op">=</span> tips_df,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                    kind <span class="op">=</span> <span class="st">'bar'</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the title</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>bar_g.figure.suptitle(<span class="st">'Total Bill by Days of the Week'</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>bar_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Days of the Week'</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>          ylabel <span class="op">=</span> <span class="st">'Total Bill'</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="data_visualization_with_seaborn_files/figure-html/cell-15-output-1.png" width="464" height="472"></p>
 </div>
 </div>
+</section>
+<section id="plotting-box-plots" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-box-plots">Plotting Box Plots</h3>
+<p>A box plot shows the underlying distribution of quantitative data, and it can quickly help us compare different data groups.</p>
 <div class="cell" data-execution_count="15">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Boxplot by smoker column.</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>b_hue_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                      y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                      data <span class="op">=</span> tips_df,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                      kind <span class="op">=</span> <span class="st">'box'</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                      sym <span class="op">=</span> <span class="st">''</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                      hue <span class="op">=</span> <span class="st">'smoker'</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                  )</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Formatting the plot</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>b_hue_g.figure.suptitle(<span class="st">'Total Bill by Days of the Week'</span>)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>b_hue_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Day of the Week'</span>,</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>            ylabel <span class="op">=</span> <span class="st">'Total Bill'</span>)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>          </span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bp_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                   y <span class="op">=</span> <span class="st">'time'</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                   data <span class="op">=</span> tips_df,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                   kind <span class="op">=</span> <span class="st">'box'</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                   order <span class="op">=</span> [<span class="st">'Dinner'</span>, <span class="st">'Lunch'</span>]</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the title</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>bp_g.figure.suptitle(<span class="st">'Total Bill by Time of the Day'</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>bp_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Total Bill'</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>          ylabel <span class="op">=</span> <span class="st">'Time of the Day'</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>          </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-16-output-1.png" width="540" height="472"></p>
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-16-output-1.png" width="464" height="472"></p>
+</div>
+</div>
+</section>
+<section id="plotting-a-box-plot-without-outliers" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-a-box-plot-without-outliers">Plotting a Box Plot without Outliers</h3>
+<p>There’re times when it may be necessary not to show outliers on a box plot. If that’s the case, we use <code>sym</code> to suppress them.</p>
+<div class="cell" data-execution_count="16">
+<details>
+<summary>Code</summary>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bp_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                   y <span class="op">=</span> <span class="st">'time'</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                   data <span class="op">=</span> tips_df,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                   kind <span class="op">=</span> <span class="st">'box'</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                   order <span class="op">=</span> [<span class="st">'Dinner'</span>, <span class="st">'Lunch'</span>],</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                   sym <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Formatting the plot</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>bp_g.figure.suptitle(<span class="st">'Total Bill by Time of the Day'</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>bp_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Total Bill'</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>          ylabel <span class="op">=</span> <span class="st">'Time of the Day'</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>          </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-17-output-1.png" width="464" height="472"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<details>
+<summary>Code</summary>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Boxplot by smoker column.</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>b_hue_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                      y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                      data <span class="op">=</span> tips_df,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                      kind <span class="op">=</span> <span class="st">'box'</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                      sym <span class="op">=</span> <span class="st">''</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                      hue <span class="op">=</span> <span class="st">'smoker'</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Formatting the plot</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>b_hue_g.figure.suptitle(<span class="st">'Total Bill by Days of the Week'</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>b_hue_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Day of the Week'</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            ylabel <span class="op">=</span> <span class="st">'Total Bill'</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>          </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-18-output-1.png" width="540" height="472"></p>
 </div>
 </div>
 </section>
 <section id="plotting-the-violin-plot" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-the-violin-plot">Plotting the Violin Plot</h3>
-<div class="cell" data-execution_count="16">
-<details>
-<summary>Code</summary>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a Violin Plot.</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>v_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                  y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                  data <span class="op">=</span> tips_df,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                  kind <span class="op">=</span> <span class="st">'violin'</span>,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                  hue <span class="op">=</span> <span class="st">'sex'</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                )</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                    </span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Formatting</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>v_g.figure.suptitle(<span class="st">"Total Bill by Days of the Week"</span>)</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>v_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Days of the Week'</span>,</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        ylabel <span class="op">=</span> <span class="st">'Total Bill'</span>)</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot      </span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-17-output-1.png" width="561" height="472"></p>
-</div>
-</div>
-</section>
-<section id="plotting-the-swarmplot" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-the-swarmplot">Plotting the Swarmplot</h3>
-<div class="cell" data-execution_count="17">
-<details>
-<summary>Code</summary>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb18"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                  y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                  data <span class="op">=</span> tips_df,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                  kind <span class="op">=</span> <span class="st">'violin'</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                  inner <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                )</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a swarm plot</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>sns.swarmplot(x <span class="op">=</span> <span class="st">'day'</span>, </span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>              y <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>              color <span class="op">=</span><span class="st">"k"</span>, </span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>              size <span class="op">=</span> <span class="dv">3</span>, </span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>              data <span class="op">=</span> tips_df,</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>              ax <span class="op">=</span> g.ax</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-18-output-1.png" width="464" height="464"></p>
-=======
-<div class="sourceCode" id="cb18"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a swarm plot</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sns.swarmplot(x <span class="op">=</span> <span class="st">'day'</span>, </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>              y <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>              color <span class="op">=</span><span class="st">"k"</span>, </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>              size <span class="op">=</span> <span class="dv">3</span>, </span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>              data <span class="op">=</span> tips_df</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-18-output-1.png" width="589" height="428"></p>
->>>>>>> 7739521e163d4374581209de69b66aaf81584832
-</div>
-</div>
 <div class="cell" data-execution_count="18">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb19"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a swarm plot</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>, </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>            y <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>            col <span class="op">=</span> <span class="st">'time'</span>, </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            aspect <span class="op">=</span> <span class="fl">.8</span>, </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>            data <span class="op">=</span> tips_df,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            kind <span class="op">=</span> <span class="st">'swarm'</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>            hue <span class="op">=</span> <span class="st">'smoker'</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a Violin Plot.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>v_g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                  y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                  data <span class="op">=</span> tips_df,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                  kind <span class="op">=</span> <span class="st">'violin'</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                  hue <span class="op">=</span> <span class="st">'sex'</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Formatting</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>v_g.figure.suptitle(<span class="st">"Total Bill by Days of the Week"</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>v_g.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">'Days of the Week'</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        ylabel <span class="op">=</span> <span class="st">'Total Bill'</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot      </span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-19-output-1.png" width="832" height="464"></p>
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-19-output-1.png" width="561" height="472"></p>
+</div>
+</div>
+</section>
+<section id="plotting-the-swarm-plot" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-the-swarm-plot">Plotting the Swarm Plot</h3>
+<div class="cell" data-execution_count="19">
+<details>
+<summary>Code</summary>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                y <span class="op">=</span> <span class="st">'total_bill'</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                data <span class="op">=</span> tips_df,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                kind <span class="op">=</span> <span class="st">'violin'</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                inner <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a swarm plot</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>sns.swarmplot(x <span class="op">=</span> <span class="st">'day'</span>, </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>              y <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>              color <span class="op">=</span><span class="st">"k"</span>, </span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>              size <span class="op">=</span> <span class="dv">3</span>, </span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>              data <span class="op">=</span> tips_df,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>              ax <span class="op">=</span> g.ax</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-20-output-1.png" width="464" height="464"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="20">
+<details>
+<summary>Code</summary>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot a swarm plot</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>sns.catplot(x <span class="op">=</span> <span class="st">'day'</span>, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>            y <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>            col <span class="op">=</span> <span class="st">'time'</span>, </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            aspect <span class="op">=</span> <span class="fl">.8</span>, </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            data <span class="op">=</span> tips_df,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            kind <span class="op">=</span> <span class="st">'swarm'</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            hue <span class="op">=</span> <span class="st">'smoker'</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-21-output-1.png" width="832" height="464"></p>
 </div>
 </div>
 </section>
 <section id="plotting-the-linear-regression-plot" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-the-linear-regression-plot">Plotting the Linear Regression Plot</h3>
-<div class="cell" data-execution_count="19">
+<div class="cell" data-execution_count="21">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot histogram</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.lmplot(x <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>               y <span class="op">=</span> <span class="st">'tip'</span>, </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>               hue <span class="op">=</span> <span class="st">'smoker'</span>,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>               col <span class="op">=</span> <span class="st">'time'</span>,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>               data <span class="op">=</span> tips_df,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>               markers <span class="op">=</span> [<span class="st">'o'</span>, <span class="st">'*'</span>], </span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>               palette <span class="op">=</span> <span class="st">'Set1'</span>)<span class="op">;</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot histogram</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.lmplot(x <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>               y <span class="op">=</span> <span class="st">'tip'</span>, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>               hue <span class="op">=</span> <span class="st">'smoker'</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>               col <span class="op">=</span> <span class="st">'time'</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>               data <span class="op">=</span> tips_df,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>               markers <span class="op">=</span> [<span class="st">'o'</span>, <span class="st">'*'</span>], </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>               palette <span class="op">=</span> <span class="st">'Set1'</span>)<span class="op">;</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-20-output-1.png" width="1025" height="463"></p>
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-22-output-1.png" width="1025" height="463"></p>
 </div>
 </div>
-<<<<<<< HEAD
-<div class="cell" data-execution_count="20">
+<div class="cell" data-execution_count="22">
 <details>
 <summary>Code</summary>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(x <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>              y <span class="op">=</span> <span class="st">'tip'</span>, </span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>              data <span class="op">=</span> tips_df, </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>              kind <span class="op">=</span> <span class="st">'reg'</span>)<span class="op">;</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>              </span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(x <span class="op">=</span> <span class="st">'total_bill'</span>, </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>              y <span class="op">=</span> <span class="st">'tip'</span>, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>              data <span class="op">=</span> tips_df, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>              kind <span class="op">=</span> <span class="st">'reg'</span>)<span class="op">;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data_visualization_with_seaborn_files/figure-html/cell-21-output-1.png" width="556" height="560"></p>
+<p><img src="data_visualization_with_seaborn_files/figure-html/cell-23-output-1.png" width="556" height="560"></p>
 </div>
 </div>
-=======
->>>>>>> 7739521e163d4374581209de69b66aaf81584832
+</section>
+<section id="closing-remarks" class="level3">
+<h3 class="anchored" data-anchor-id="closing-remarks">Closing Remarks</h3>
+<p>This brief tutorial aims to teach users how to use Quarto to analyze data with <code>Python</code> and visualize it with <code>seaborn</code>. A thorough analysis would delve deep into describing the purposes of each data visualization function. But for our purpose, we will leave things as sketchy as they are.</p>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ul>
+<li><p><a href="https://seaborn.pydata.org/">Seaborn library website</a></p></li>
+<li><p><code>Datacamp course:</code> Introduction to <a href="https://www.datacamp.com/courses/introduction-to-data-visualization-with-seaborn">Introduction to Data Visualization with Seaborn</a>.</p></li>
+</ul>
 </section>
 </section>
 </main>

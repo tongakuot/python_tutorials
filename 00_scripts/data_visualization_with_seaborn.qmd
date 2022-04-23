@@ -20,8 +20,6 @@ According to its website, *quarto.org*, `Quarto` *"is an open-source scientific 
 
 -   Create dynamic content with [Python](https://quarto.org/docs/computations/python.html), [R](https://quarto.org/docs/computations/r.html), [Julia](https://quarto.org/docs/computations/julia.html), and [Observable](https://quarto.org/docs/computations/ojs.html);
 
-<!-- -->
-
 -   Author documents as plain text markdown or [Jupyter](https://jupyter.org/) notebooks;
 
 -   Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more; and
@@ -33,12 +31,6 @@ And why `seaborn`?
 `Seaborn` is a **Python** data visualization library built on top of `matplotlib`.
 
 > Seaborn is a Python data visualization library based on [matplotlib](https://matplotlib.org/). It provides a high-level interface for drawing attractive and informative statistical graphics. *(https://seaborn.pydata.org/)*
-
-<<<<<<< HEAD
-In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by **Gary-Gregoire Coquillo's** February 5, 2020 post on `LinkedIn`. A Copy of **Gary-Gregoire's article is located here: https://github.com/tongakuot/python_tutorials/blob/main/Exploring%20Seaborn%E2%80%99s%20Built-in%20Dataset.pdf.**
-=======
-In addition to the aforementioned motivations for this tutorial, this tutorial was also inspired by **Gary-Gregoire Coquillo's** February 5, 2020 post on `LinkedIn`. A Copy of **Gary-Gregoire's article is located here: 00_images/Exploring Seaborn's Built-in Dataset.pdf.**
->>>>>>> 7739521e163d4374581209de69b66aaf81584832
 
 Now let's get started.
 
@@ -62,7 +54,7 @@ sns.set_context('notebook')
 
 ### Loading the Dataset
 
-In this tutorial, we will use the `tips` dataset for our purpose.
+In this tutorial, we will use the `tips` dataset.
 
 ```{python}
 tips_df = sns.load_dataset('tips')
@@ -164,7 +156,29 @@ sc_g.set(xlabel = 'Total Bill',
 plt.show()
 ```
 
-### Plotting the Bargraph
+```{python}
+# Plot a scatterplot with the relplot() function
+sc_g = sns.relplot(x = 'total_bill', 
+            y = 'tip',
+            data = tips_df,
+            kind = 'scatter',
+            hue = 'smoker',
+            col = 'time',
+            style = 'smoker'
+          )
+ 
+# Add the title
+sc_g.figure.suptitle('Tip vs Total Bill')
+sc_g.set(xlabel = 'Total Bill',
+         ylabel = 'Tip')
+         
+# Show the plot.
+plt.show()
+```
+
+### Plotting Categorical Plots
+
+Here we will use the `catplot()` function because it enables us to create subplots with `col=` and `row=` easily.
 
 ```{python}
 # Plot the countplot.
@@ -175,6 +189,19 @@ count_g = sns.catplot(
 )
 
 count_g.figure.suptitle('Countplot by Sex')
+plt.show()
+```
+
+```{python}
+# Plot the countplot.
+count_g = sns.catplot(
+    x = 'smoker',
+    data = tips_df,
+    kind = 'count',
+    hue = 'sex'
+)
+
+count_g.figure.suptitle('Countplot by Smoker')
 plt.show()
 ```
 
@@ -192,7 +219,9 @@ bar_g.set(xlabel = 'Days of the Week',
 plt.show()
 ```
 
-### Plotting the Boxplot
+### Plotting Box Plots
+
+A box plot shows the underlying distribution of quantitative data, and it can quickly help us compare different data groups.
 
 ```{python}
 bp_g = sns.catplot(x = 'total_bill',
@@ -210,7 +239,9 @@ bp_g.set(xlabel = 'Total Bill',
 plt.show()
 ```
 
-### Plotting the Boxplot without Outliers
+### Plotting a Box Plot without Outliers
+
+There're times when it may be necessary not to show outliers on a box plot. If that's the case, we use `sym` to suppress them.
 
 ```{python}
 bp_g = sns.catplot(x = 'total_bill',
@@ -269,14 +300,14 @@ v_g.set(xlabel = 'Days of the Week',
 plt.show()
 ```
 
-### Plotting the Swarmplot
+### Plotting the Swarm Plot
 
 ```{python}
 g = sns.catplot(x = 'day',
-                  y = 'total_bill',
-                  data = tips_df,
-                  kind = 'violin',
-                  inner = None
+                y = 'total_bill',
+                data = tips_df,
+                kind = 'violin',
+                inner = None
                 )
                 
 
@@ -287,7 +318,6 @@ sns.swarmplot(x = 'day',
               size = 3, 
               data = tips_df,
               ax = g.ax
-              data = tips_df
             )
             
 # Display the plot
@@ -323,7 +353,6 @@ g = sns.lmplot(x = 'total_bill',
 plt.show()
 ```
 
-
 ```{python}
 sns.jointplot(x = 'total_bill', 
               y = 'tip', 
@@ -334,3 +363,12 @@ sns.jointplot(x = 'total_bill',
 plt.show()
 ```
 
+### Closing Remarks
+
+This brief tutorial aims to teach users how to use Quarto to analyze data with `Python` and visualize it with `seaborn`. A thorough analysis would delve deep into describing the purposes of each data visualization function. But for our purpose, we will leave things as sketchy as they are.
+
+### References
+
+-   [Seaborn library website](https://seaborn.pydata.org/)
+
+-   `Datacamp course:` Introduction to [Introduction to Data Visualization with Seaborn](https://www.datacamp.com/courses/introduction-to-data-visualization-with-seaborn).
