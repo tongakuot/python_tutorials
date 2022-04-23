@@ -1,6 +1,7 @@
 ---
 title: "Data Visualization with Seaborn"
 author: "Alier Reng"
+date: "April 23, 2022"
 format: 
   html:
     code-fold: true
