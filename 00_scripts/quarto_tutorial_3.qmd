@@ -3,7 +3,7 @@ title: "Quarto Tutorial 3"
 author: "Alier Reng"
 date: "April 24, 2022"
 format: 
-  pdf:
+  html:
     toc: true
     number-sections: true
     html-math-method: katex
