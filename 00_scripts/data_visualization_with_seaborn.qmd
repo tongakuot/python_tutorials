@@ -4,6 +4,7 @@ author: "Alier Reng"
 date: "April 23, 2022"
 format: 
   html:
+    page-layout: article
     code-fold: true
 editor: visual
 jupyter: python3

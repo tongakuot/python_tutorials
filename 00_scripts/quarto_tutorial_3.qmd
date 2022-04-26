@@ -1,0 +1,192 @@
+---
+title: "Quarto Tutorial 3"
+author: "Alier Reng"
+date: "April 24, 2022"
+format: 
+  html:
+    toc: true
+    number-sections: true
+    html-math-method: katex
+    highlight-style: github
+    code-overflow: wrap
+editor: visual
+jupyter: python3
+---
+
+## Introduction
+
+> Quarto enables you to weave together content and executable code into a finished document.
+> To learn more about Quarto see <https://quarto.org>.
+
+### Definitions
+
+Before getting started, let's explain what each option in the `yaml` means.
+
+-   `toc` adds the table of contents to your document.
+
+-   `number-sections` adds number to the section headings when sets to `true`.
+
+-   `Latex` equations are rendered using `MathJax`; however, you can change this to other options, as shown above.
+
+-   `highlight-style` is used to style code outputs.
+
+-   `code-overflow` controls the width of source code.
+    When sets to `wrap`, the source code wraps around and vice versa.
+
+There are numerous options to style and format your document, so we recommend reading the documentation on the [Quarto website](https://quarto.org/docs/output-formats).
+
+### Loading the Libraries
+
+Here we will load `pandas`, `seaborn`, and `matplotlib`.
+
+```{python}
+# Loading packages
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Formatting
+sns.set_context('notebook')
+sns.set_style('white')
+```
+
+### Importing the Dataset
+
+```{python}
+# Import the data
+ss_2008_census_df = pd.read_csv('../00_data/ss_2008_census_data_raw.csv')
+
+# Inspect the first 5 rows
+ss_2008_census_df.head()
+```
+
+```{python}
+# Inspect the last 5 rows
+ss_2008_census_df.tail()
+```
+
+Above, we see that the three last rows contain `nas` (missing values).
+One is the data source where we obtained this dataset, and the other is the data URL.
+
+## Cleaning and Transforming the Data
+
+### Checking for Missing Values
+
+Now that we have imported our dataset, we will clean and manipulate it.
+First, we will reconfirm the missing values and proceed with our data wrangling process.
+
+```{python}
+# Check for missing values
+ss_2008_census_df.isna().sum()
+```
+
+### Wrangling the Data Using `Method Chaining`
+
+```{python}
+# Select desired columns
+cols = ['Region Name', 'Variable Name', 'Age Name', '2008']
+
+# Rename columns
+cols_names = {'Region Name':'state', 
+             'Variable Name':'gender', 
+             'Age Name':'age_cat', 
+             '2008':'population'}
+             
+# Create new age categories           
+new_age_cats = {'0 to 4':'0-14', 
+                '5 to 9':'0-14',
+                '10 to 14':'0-14',
+                '15 to 19':'15-29', 
+                '20 to 24':'15-29',
+                '25 to 29':'15-29',
+                '30 to 34':'30-49', 
+                '35 to 39':'30-49',
+                '40 to 44':'30-49',
+                '45 to 49':'30-49', 
+                '50 to 54':'50-64', 
+                '55 to 59':'50-64',
+                '60 to 64':'50-64', 
+                '65+':'>= 65'
+                }
+             
+
+# Clean the data
+df = (ss_2008_census_df
+      [cols]
+      .rename(columns = cols_names)
+      .query('~age_cat.isna()')
+      .assign(gender = lambda x:x['gender'].str.split('\s+').str[1],
+             age_cat = lambda x:x['age_cat'].replace(new_age_cats),
+             population = lambda x:x['population'].astype('int')
+      )
+      .query('gender != "Total" & age_cat != "Total"')
+      # .drop(columns = 'pop_cat', axis = 'column')
+      .groupby(['state', 'gender', 'age_cat'])['population']
+      .sum()
+      .reset_index()
+     )
+
+# Inspect the first 5 rows
+df.head()
+```
+
+## Summarizing Census Data
+
+### Population by State
+
+```{python}
+# Calculate census data by state
+st_df = (df  
+         .groupby(['state'])['population']
+         .sum()
+         .reset_index()
+         .sort_values('population', 
+                      ascending=False, 
+                      ignore_index=True)
+         )
+
+# Display the outpout
+st_df
+```
+
+### Population by State and Gender
+
+```{python}
+# Calculate census data by state and gender
+gender_df = (df  
+         .groupby(['state', 'gender'])['population']
+         .sum()
+         .reset_index()
+         .sort_values('population', 
+                      ascending=False, 
+                      ignore_index=True)
+         )
+
+# Display the outpout
+gender_df.head()
+```
+
+### Population by State, Gender, and Age Category
+
+```{python}
+# Calculate census data by state, gender, and age category
+age_df = (df  
+         .groupby(['state', 'gender', 'age_cat'])['population']
+         .sum()
+         .reset_index()
+         .sort_values(['state','population'], 
+                      ascending = [True, False], 
+                      ignore_index = True)
+         )
+
+# Display the outpout
+age_df.head(5)
+```
+
+## Closing Remarks
+
+This tutorial demonstrates creating a Quarto document with various yaml options to style and format the output.
+We hope you will find this tutorial helpful.
+Please let us know if there are any topics you want us to do a tutorial on.
+
+With that said, our next tutorial will be on R.
