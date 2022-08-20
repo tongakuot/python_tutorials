@@ -1,0 +1,120 @@
+---
+title: "Python vs R Code Comparison"
+author: "Alier Reng"
+format: html
+editor: visual
+---
+
+## Comparing Python and R Code
+
+This morning (***August 20, 2022***), I saw a **LinkedIn** post where the user compares `R` and `Python` solutions.
+So, I decided to play around with the data in both `R` and `Python` to see the results myself.
+Below is an example code in R and Python.
+
+## Loading the Libraries - R
+
+Here we will load only `tidyverse` and `reticulate`.
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: true
+
+library(tidyverse)
+library(reticulate)
+```
+
+## Importing Data with R
+
+```{r}
+# Import the data
+data_raw <- read_csv("../data.csv", show_col_types = FALSE)
+
+# Inspect the first 5 rows: I prefer `dplyr` slice_head()/slice_tail()
+slice_head(data_raw, n = 5)
+
+```
+
+## Transforming the Data
+
+```{r}
+# Clean and transform the data
+data_tbl <- 
+  
+  data_raw %>% 
+  
+  # Convert column names to lower and replace spaces with underscores if applicable
+  janitor::clean_names() %>% 
+  rename(category = variable) %>% 
+  
+  # Add year - month column
+  mutate(
+    date = str_c(year,  month, sep = " ")
+  ) %>% 
+  
+  # Spread the data
+  select(-month, -year) %>% 
+  pivot_wider(
+    names_from = date,
+    values_from  = amount
+  ) %>% 
+  
+  # Add row and column sums
+  janitor::adorn_totals(c("row","col"))
+
+# Print the output as a gt table
+data_tbl %>% 
+ gt::gt() %>% 
+ gtExtras::gt_theme_espn()
+```
+
+## Computing the Results in Python
+
+Next, let's replicate the above results in `pandas`.
+
+## Loading the Libraries
+
+Here we'll only import `pandas` and `numpy`.
+
+```{python}
+# Import libraries
+import pandas as pd
+import numpy as np
+```
+
+## Importing the Data in Python
+
+```{python}
+#| echo: true
+# Import the data
+raw = pd.read_csv('../data.csv')
+
+# Inspect the first 5 rows
+raw.head()
+```
+
+## Transforming the Data
+
+```{python}
+# Clean and transform the data
+cols = ['Category','2022 Jan'  ,'2022 Feb', '2022 Oct', '2022 Nov', 'total']
+
+df = (raw
+      # Add a date column with the assign() method
+      .assign(
+        date = raw['Year'].astype('str') + ' ' + raw['Month']
+      )
+      # Initialize a pivot table
+      .pivot_table(index=['Variable'], columns=['date'],
+                   values='Amount', aggfunc = np.sum, 
+                   margins = True, margins_name = 'total'
+    )
+    .reset_index()
+    .rename(columns = {'Variable':'Category'})
+    [cols] # Rename columns
+    .set_index('Category')
+    
+)
+
+df
+```

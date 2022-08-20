@@ -53,6 +53,7 @@ sns.set_style('white')
 ### Importing the Dataset
 
 ```{python}
+#| column: page
 # Import the data
 ss_2008_census_df = pd.read_csv('../00_data/ss_2008_census_data_raw.csv')
 
@@ -61,6 +62,8 @@ ss_2008_census_df.head()
 ```
 
 ```{python}
+#| column: screen
+#| echo: FALSE
 # Inspect the last 5 rows
 ss_2008_census_df.tail()
 ```

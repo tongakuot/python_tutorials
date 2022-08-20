@@ -1,0 +1,13 @@
+Name,Month,Year,Variable,Amount
+John Henry,Jan,2022,Salary,1000
+John Henry,Jan,2022,Taxes,-300
+John Henry,Jan,2022,Bonus,100
+John Henry,Feb,2022,Salary,1000
+John Henry,Feb,2022,Taxes,-300
+John Henry,Feb,2022,Bonus,0
+John Henry,Oct,2022,Salary,1000
+John Henry,Oct,2022,Taxes,-300
+John Henry,Oct,2022,Bonus,300
+John Henry,Nov,2022,Salary,1000
+John Henry,Nov,2022,Taxes,-300
+John Henry,Nov,2022,Bonus,10
