@@ -1,0 +1,95 @@
+---
+title: "Code Challenge 2"
+author: "Alier Reng"
+format: html
+editor: visual
+---
+
+## CODE CHALLENGE - PART 2
+
+This is a code challenge
+
+## Importing Libraries
+
+```{python}
+import pandas as pd
+import numpy as np
+
+```
+
+```{python}
+raw = pd.read_csv('00_data/data_breaks.csv')
+
+# Inspect the first 5 rows
+raw.head()
+```
+
+## Transforming the data
+
+```{python}
+#| code-overflow: wrap
+# Clean and transform the data
+
+df = (raw
+      .assign(
+        Period = lambda raw: pd.to_datetime(raw['Period']).dt.date,
+        Return = lambda raw_: raw_['Return'].str.rstrip('%').astype(float) / 100,
+        lag = lambda raw_: raw_['Return'].shift(1),
+        value = lambda raw_: np.where(raw_['Return'].isnull() & ~ raw_['lag'].isnull(), 1, 0),
+        group_id = lambda raw_: np.cumsum(raw_['value']) + 1
+      )
+      .drop(columns = ['lag', 'value'])
+      .dropna()
+
+)
+
+
+# Inspect the first 5 rows
+df
+```
+
+```{r}
+#| warning: false
+#| message: false
+
+# Libraries
+library(tidyverse)
+library(lubridate)
+
+
+# compute unique ID's using cumsum
+data_raw <- read_csv('00_data/data_breaks.csv', show_col_types = FALSE)
+ 
+# Subsetting the data 
+result <- data_raw %>%
+  mutate(Period = mdy(Period)) %>% 
+  mutate(
+    Return = 0.01 * as.numeric(Return %>% str_remove_all("%")),
+    BreakGroup = if_else(is.na(Return) & !is.na(lag(Return)), 1, 0), 
+    BreakGroup = cumsum(BreakGroup) + 1
+  ) %>% 
+  drop_na(Return)
+```
+
+## Converting our `R` code into a function
+
+```{r}
+# Defining a function: we assume that the data variables will be constant; otherwise, we should not hard code them in our function.
+add_break_groups <- function(data, .date) {
+  
+  data %>% 
+    
+    mutate(Period = mdy({{ .date }})) %>% 
+    mutate(
+      Return = 0.01 * as.numeric(Return %>% str_remove_all("%")),
+      BreakGroup = if_else(is.na(Return) & !is.na(lag(Return)), 1, 0),
+      BreakGroup = cumsum(BreakGroup) + 1
+    ) %>% 
+    drop_na(Return)
+    
+}
+
+# Testing our new function
+# ========================
+aa <- add_break_groups(data_raw, .date = Period)
+```

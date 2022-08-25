@@ -63,7 +63,7 @@ ss_2008_census_df.head()
 
 ```{python}
 #| column: screen
-#| echo: FALSE
+#| echo: false
 # Inspect the last 5 rows
 ss_2008_census_df.tail()
 ```

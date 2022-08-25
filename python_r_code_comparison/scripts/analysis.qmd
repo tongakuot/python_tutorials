@@ -108,13 +108,28 @@ df = (raw
       .pivot_table(index=['Variable'], columns=['date'],
                    values='Amount', aggfunc = np.sum, 
                    margins = True, margins_name = 'total'
-    )
+     )
     .reset_index()
     .rename(columns = {'Variable':'Category'})
-    [cols] # Rename columns
+    [cols] # Reorder columns
     .set_index('Category')
     
 )
 
 df
+```
+
+```{}
+```
+
+```{python}
+d = a + b
+det_d = np.linalg.det(d)
+print(f' The deterimant of the sum of matrix a and matrix b is {det_d = }')
+```
+
+# Data Link:
+
+```{python}
+
 ```
