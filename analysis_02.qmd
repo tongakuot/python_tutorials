@@ -7,7 +7,7 @@ editor: visual
 
 ## CODE CHALLENGE - PART 2
 
-This is a code challenge
+This tutorial will teach you how to solve the same problem in R and Python.
 
 ## Importing Libraries
 
@@ -32,20 +32,60 @@ raw.head()
 
 df = (raw
       .assign(
-        Period = lambda raw: pd.to_datetime(raw['Period']).dt.date,
+        Period = lambda raw: pd.to_datetime(raw['Period']).dt.strftime('%Y-%m-%d'),
         Return = lambda raw_: raw_['Return'].str.rstrip('%').astype(float) / 100,
         lag = lambda raw_: raw_['Return'].shift(1),
-        value = lambda raw_: np.where(raw_['Return'].isnull() & ~ raw_['lag'].isnull(), 1, 0),
+        value = lambda raw_: np.where(raw_['Return'].isna() & ~ raw_['lag'].isna(), 1, 0),
         group_id = lambda raw_: np.cumsum(raw_['value']) + 1
       )
       .drop(columns = ['lag', 'value'])
       .dropna()
+      .reset_index(drop=True)
 
 )
 
 
 # Inspect the first 5 rows
 df
+```
+
+Confirm the number of observations (rows) and variables (columns)
+
+```{python}
+print(f'This dataset has {df.shape[0]} rows and {df.shape[1]} columns.')
+```
+
+## Converting our `Python` code into a function
+
+```{python}
+# Define a function
+def compute_group_ids(df):
+  """
+  Objective: Compute group breaks and convert them into group ids.
+
+  args: pandas DataFrame to be transformed.
+  Return: DataFrame
+  """
+  return(df
+         .assign(
+           Period = lambda df: pd.to_datetime(df['Period']).dt.strftime('%Y-%m-%d'),
+           Return = lambda df_: df_['Return'].str.rstrip('%').astype(float) / 100,
+           lag = lambda df_: df_['Return'].shift(1),
+           value = lambda df_: np.where(df_['Return'].isna() & \
+           ~ df_['lag'].isna(), 1, 0),
+          group_id = lambda df_: np.cumsum(df_['value']) + 1
+          )
+          .drop(columns = ['lag', 'value'])
+          .dropna()
+          .reset_index(drop=True)
+          .rename(columns=lambda col: col.lower())
+          )
+
+# Testing our new function
+aa = compute_group_ids(raw)
+
+# Inspect the first 5 rows
+aa.head()
 ```
 
 ```{r}
@@ -61,7 +101,7 @@ library(lubridate)
 data_raw <- read_csv('00_data/data_breaks.csv', show_col_types = FALSE)
  
 # Subsetting the data 
-result <- data_raw %>%
+results_tbl <- data_raw %>%
   mutate(Period = mdy(Period)) %>% 
   mutate(
     Return = 0.01 * as.numeric(Return %>% str_remove_all("%")),
@@ -69,6 +109,9 @@ result <- data_raw %>%
     BreakGroup = cumsum(BreakGroup) + 1
   ) %>% 
   drop_na(Return)
+  
+# Inspect the first 10 rows
+slice_head(results_tbl, n = 10)
 ```
 
 ## Converting our `R` code into a function
@@ -92,4 +135,5 @@ add_break_groups <- function(data, .date) {
 # Testing our new function
 # ========================
 aa <- add_break_groups(data_raw, .date = Period)
+aa
 ```
