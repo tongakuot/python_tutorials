@@ -19,7 +19,8 @@ import numpy as np
 ```
 
 ```{python}
-raw = pd.read_csv('00_data/data_breaks.csv')
+# Import raw data
+raw = pd.read_csv('../00_data/data_breaks.csv')
 
 # Inspect the first 5 rows
 raw.head()
@@ -138,4 +139,15 @@ compute_clusters <- function(data, .date) {
 # ========================
 aa <- compute_clusters(data_raw, .date = Period)
 aa
+```
+
+```{python}
+for i in range(8):
+  if i % 2 == 1:
+    print(f'The value of {i=}')
+  else:
+    print(f'The value of {i**2 = } & {i = }.')
+```
+
+```{}
 ```

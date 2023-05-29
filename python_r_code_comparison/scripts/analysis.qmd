@@ -119,13 +119,48 @@ df = (raw
 df
 ```
 
-```{}
-```
-
 ```{python}
-d = a + b
-det_d = np.linalg.det(d)
-print(f' The deterimant of the sum of matrix a and matrix b is {det_d = }')
+# Writing a function
+report_year = str(raw['Year'][0])
+
+def report_sort(cols):
+  
+  def internal_sort(name):
+    months = {'Jan':1, 'Feb':2, 'Mar':3, 'Apr':4, 'May':5, 'Jun':6,
+              'Jul':7, 'Aug':8, 'Sep':9, 'Oct':10, 'Nov':11, 'Dec':12}
+              
+    if name == 'Category':
+      return 0
+    elif name == 'total':
+      return 20
+    else:
+      idx = name.split()[1]
+      return months[idx]
+  return sorted(cols, key=internal_sort)
+
+df = (raw
+      # Add a date column with the assign() method
+      .assign(
+        date = raw['Year'].astype('str') + ' ' + raw['Month']
+      )
+      # Initialize a pivot table
+      .pivot_table(
+        index=['Variable', 'Name'], 
+        columns=['date'],
+        values='Amount', 
+        aggfunc = np.sum, 
+        margins = True, 
+        margins_name = 'Total'
+     )
+    .reset_index()
+    .rename(columns = {'Variable':'Category'})
+    .filter(regex=rf'Category|Total|^{report_year}*')
+    .sort_index(axis='columns', key=report_sort)
+    .set_index('Category')
+    
+)
+
+df
 ```
 
 # Data Link:

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alier Reng">
+<meta name="description" content="Discover the power of the Polars library for efficient data cleaning and transformation in Python. This tutorial showcases how to leverage Polars’ speed and intuitive syntax to preprocess a real-world dataset - the South Sudan 2008 Census. You’ll learn how to load, clean, and transform data using method chaining, and encapsulate the entire process into a reusable function. Jump in to enhance your data science toolkit with Polars, and make your data ready for insightful analysis!">
+
+<title>Beginner’s Guide to Data Cleaning and Transformation with Polars</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Beginner’s Guide to Data Cleaning and Transformation with Polars</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Data Wrangling</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Polars</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Discover the power of the Polars library for efficient data cleaning and transformation in Python. This tutorial showcases how to leverage Polars’ speed and intuitive syntax to preprocess a real-world dataset - the South Sudan 2008 Census. You’ll learn how to load, clean, and transform data using method chaining, and encapsulate the entire process into a reusable function. Jump in to enhance your data science toolkit with Polars, and make your data ready for insightful analysis!
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Alier Reng </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Saturday, May 27, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="motivation" class="level1">
+<h1><strong>Motivation</strong></h1>
+<p>Data science is an iterative process, often requiring numerous repetitions of steps like cleaning, transformation, and analysis. Efficiency and speed are vital in this repetitive cycle, and that’s where the Polars library comes into play. Polars is a DataFrame library implemented in Rust and Python, offering performance benefits, particularly with larger datasets. In this tutorial, we’ll explore how to leverage Polars to clean and transform data using a fascinating dataset: the South Sudan 2008 Census dataset.</p>
+</section>
+<section id="introduction" class="level1">
+<h1><strong>Introduction</strong></h1>
+<p>Polars is a library well-suited for out-of-core computation, making it an excellent choice for large datasets that do not fit in memory. It boasts lightning-fast operation speeds and is highly parallelized, making it a powerful tool for data scientists and analysts. Our task today involves cleaning and transforming a real-world dataset, the South Sudan 2008 Census dataset. This data presents us with practical challenges and serves as an excellent example to demonstrate the capabilities of the Polars library.</p>
+</section>
+<section id="data-cleaning-and-transformation" class="level1">
+<h1><strong>Data Cleaning and Transformation</strong></h1>
+<p>In the following steps, we illustrate how to load the libraries and import the dataset with the <code>Polars</code> Python library.</p>
+<section id="a-loading-the-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="a-loading-the-libraries"><strong>a) Loading the Libraries</strong></h2>
+<p>We begin by importing the necessary libraries. Our primary library is <code>Polars</code>, which we import under the alias ‘pl’. We also import the <code>os</code> library, which will help us with file path operations.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="b-importing-the-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="b-importing-the-dataset"><strong>b) Importing the Dataset</strong></h2>
+<p>Our next step involves reading the dataset. We first identify the file’s location and use <code>Polars</code>’ scan_csv function to read the data into a DataFrame. To handle any missing data, we specify ‘NA’ as a null value.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain base directory path</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>base_dir <span class="op">=</span> os.getcwd()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set relative path</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>file_name <span class="op">=</span> <span class="st">"../00_data/ss_2008_census_data_raw.csv"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the full file path by joining the base directory and the relative path</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>file_path <span class="op">=</span> os.path.join(base_dir, file_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our data cleaning and transformation process involves selecting specific columns, renaming them, replacing specific strings, filtering, dropping nulls, and grouping the data. We execute these steps using method chaining, which is one of the Polars library’s convenient features.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It’s worth noting that <code>Polars</code> handles missing values differently from <code>Pandas</code>. Therefore, you need to identify how missing values are represented in your dataset before importing it. If you don’t, you may encounter an error message.</p>
+</div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode python code-annotation-code code-with-copy"><code class="sourceCode python"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in the file with polars; clean and transform</span></span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>census <span class="op">=</span> (</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>    pl.scan_csv(file_path, null_values<span class="op">=</span><span class="st">'NA'</span>)</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'Region Name'</span>).alias(<span class="st">'state'</span>),</span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'Variable Name'</span>).<span class="bu">str</span>.replace(<span class="st">'Population, '</span>, <span class="st">''</span>)</span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a>            .<span class="bu">str</span>.replace(<span class="st">' </span><span class="ch">\\</span><span class="st">(Number</span><span class="ch">\\</span><span class="st">)'</span>, <span class="st">''</span>).alias(<span class="st">'gender'</span>),</span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'Age Name'</span>).alias(<span class="st">'age_category'</span>),</span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'2008'</span>).alias(<span class="st">'population'</span>),</span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(</span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-hidden="true" tabindex="-1"></a>      (pl.col(<span class="st">'age_category'</span>) <span class="op">!=</span> <span class="st">"Total"</span>) <span class="op">&amp;</span> (pl.col(<span class="st">'gender'</span>) <span class="op">!=</span> <span class="st">"Total"</span>)</span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-hidden="true" tabindex="-1"></a>    .drop_nulls()</span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">'state'</span>, <span class="st">'gender'</span>, <span class="st">'age_category'</span>])</span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="annotated-cell-3-20"><a href="#annotated-cell-3-20" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="annotated-cell-3-21"><a href="#annotated-cell-3-21" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'population'</span>).<span class="bu">sum</span>().alias(<span class="st">'total'</span>)</span>
+<span id="annotated-cell-3-22"><a href="#annotated-cell-3-22" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="annotated-cell-3-23"><a href="#annotated-cell-3-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="annotated-cell-3-24"><a href="#annotated-cell-3-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="annotated-cell-3-25"><a href="#annotated-cell-3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-26"><a href="#annotated-cell-3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the first few rows</span></span>
+<span id="annotated-cell-3-27"><a href="#annotated-cell-3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------</span></span>
+<span id="annotated-cell-3-28"><a href="#annotated-cell-3-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census.collect().head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (5, 4)
+┌─────────────────────────┬────────┬──────────────┬───────┐
+│ state                   ┆ gender ┆ age_category ┆ total │
+│ ---                     ┆ ---    ┆ ---          ┆ ---   │
+│ str                     ┆ str    ┆ str          ┆ i64   │
+╞═════════════════════════╪════════╪══════════════╪═══════╡
+│ Jonglei                 ┆ Female ┆ 40 to 44     ┆ 29309 │
+│ Warrap                  ┆ Male   ┆ 5 to 9       ┆ 81314 │
+│ Northern Bahr el Ghazal ┆ Male   ┆ 10 to 14     ┆ 42046 │
+│ Upper Nile              ┆ Male   ┆ 15 to 19     ┆ 57387 │
+│ Jonglei                 ┆ Male   ┆ 45 to 49     ┆ 24907 │
+└─────────────────────────┴────────┴──────────────┴───────┘</code></pre>
+</div>
+</div>
+<p>The above code performs several data manipulation tasks on a CSV file containing census data:</p>
+<ol type="1">
+<li><p><strong><code>pl.scan_csv(file_path, null_values='NA')</code></strong>: This line reads a CSV file from the given file path, treating ‘NA’ as a null value. The file’s contents are loaded into a Polars DataFrame.</p></li>
+<li><p><strong><code>.select([...])</code></strong>: This line selects specific columns from the DataFrame and does some transformations:</p>
+<ul>
+<li><p><strong><code>pl.col('Region Name').alias('state')</code></strong>: This selects the column ‘Region Name’ and renames it to ‘state’.</p></li>
+<li><p><strong><code>pl.col('Variable Name').str.replace('Population, ', '').str.replace(' \\(Number\\)', '').alias('gender')</code></strong>: This selects the ‘Variable Name’ column, replaces the string ‘Population,’ with nothing, replaces ’ \(Number\)’ also with nothing, and renames the column to ‘gender’.</p></li>
+<li><p><strong><code>pl.col('Age Name').alias('age_category')</code></strong>: This selects the ‘Age Name’ column and renames it to ‘age_category’.</p></li>
+<li><p><strong><code>pl.col('2008').alias('population')</code></strong>: This selects the ‘2008’ column and renames it to ‘population’.</p></li>
+</ul></li>
+<li><p><strong><code>.filter((pl.col('age_category') != "Total") &amp; (pl.col('gender') != "Total"))</code></strong>: This line filters the DataFrame, keeping only rows where ‘age_category’ and ‘gender’ are not ‘Total’.</p></li>
+<li><p><strong><code>.drop_nulls()</code></strong>: This line removes any rows from the DataFrame that contain null values.</p></li>
+<li><p><strong><code>.groupby(['state', 'gender', 'age_category'])</code></strong>: This line groups the DataFrame by the ‘state’, ‘gender’, and ‘age_category’ columns.</p></li>
+<li><p><strong><code>.agg([pl.col('population').sum().alias('total')])</code></strong>: This line calculates the sum of the ‘population’ column within each group (created by the groupby operation), and names this new column ‘total’.</p></li>
+</ol>
+<p>Finally, <strong><code>print(census.collect().head())</code></strong> prints the first few rows of the transformed DataFrame to give a preview of the resulting data structure. The <strong><code>collect()</code></strong> function is called to execute all the lazy operations and return the DataFrame.</p>
+</section>
+</section>
+<section id="converting-the-code-into-a-function" class="level1">
+<h1><strong>Converting the Code into a Function</strong></h1>
+<p>For better reusability and modularity, we encapsulate the data cleaning and transformation process into a function named ‘tweak_census_data’. The function takes in a file path and a list of grouping columns as arguments and returns a cleaned_df DataFrame.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Write a function</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------------</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tweak_census_data(file_path: <span class="bu">str</span>, columns: <span class="bu">list</span>[<span class="bu">str</span>]) <span class="op">-&gt;</span> pl.Expr:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  cleaned_df <span class="op">=</span> (</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    pl.scan_csv(file_path, null_values<span class="op">=</span><span class="st">'NA'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'Region Name'</span>).alias(<span class="st">'state'</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'Variable Name'</span>).<span class="bu">str</span>.replace(<span class="st">'Population, '</span>, <span class="st">''</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            .<span class="bu">str</span>.replace(<span class="st">' </span><span class="ch">\\</span><span class="st">(Number</span><span class="ch">\\</span><span class="st">)'</span>, <span class="st">''</span>).alias(<span class="st">'gender'</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'Age Name'</span>).alias(<span class="st">'age_category'</span>),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'2008'</span>).alias(<span class="st">'population'</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      (pl.col(<span class="st">'age_category'</span>) <span class="op">!=</span> <span class="st">"Total"</span>) <span class="op">&amp;</span> (pl.col(<span class="st">'gender'</span>) <span class="op">!=</span> <span class="st">"Total"</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    .drop_nulls()</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    .groupby(columns)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        [</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'population'</span>).<span class="bu">sum</span>().alias(<span class="st">'total'</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    .collect()</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> cleaned_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then test the function with our dataset to ensure it works correctly.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing the function</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>census <span class="op">=</span> tweak_census_data(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  file_path <span class="op">=</span> file_path,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  columns <span class="op">=</span> [<span class="st">'state'</span>, <span class="st">'gender'</span>, <span class="st">'age_category'</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the first 5 rows</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (5, 4)
+┌─────────────────────────┬────────┬──────────────┬───────┐
+│ state                   ┆ gender ┆ age_category ┆ total │
+│ ---                     ┆ ---    ┆ ---          ┆ ---   │
+│ str                     ┆ str    ┆ str          ┆ i64   │
+╞═════════════════════════╪════════╪══════════════╪═══════╡
+│ Unity                   ┆ Female ┆ 30 to 34     ┆ 18079 │
+│ Eastern Equatoria       ┆ Female ┆ 65+          ┆ 8637  │
+│ Warrap                  ┆ Male   ┆ 15 to 19     ┆ 44951 │
+│ Northern Bahr el Ghazal ┆ Male   ┆ 55 to 59     ┆ 6330  │
+│ Central Equatoria       ┆ Male   ┆ 45 to 49     ┆ 19463 │
+└─────────────────────────┴────────┴──────────────┴───────┘</code></pre>
+</div>
+</div>
+<p>Next, we will request assistance from <code>ChatGPT</code> to enhance our function and to include a comprehensive <code>docstring</code> for better documentation and understanding.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-overflow-wrap code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> preprocess_census_data(file_path: <span class="bu">str</span>, columns: <span class="bu">list</span>[<span class="bu">str</span>]) <span class="op">-&gt;</span> pl.Expr:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">    This function reads a CSV file, preprocesses the data and returns a dataframe.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Preprocessing includes selecting specific columns, renaming them, replacing specific strings,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">    filtering, dropping nulls, and grouping the data.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">    :param file_path: The path to the CSV file.</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">    :param columns: The columns to group by.</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">    :return: A Polars DataFrame after preprocessing.</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        raw_data <span class="op">=</span> pl.scan_csv(file_path, null_values<span class="op">=</span><span class="st">'NA'</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    preprocessed_data <span class="op">=</span> (</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        raw_data</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        .select(</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            [</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                pl.col(<span class="st">'Region Name'</span>).alias(<span class="st">'state'</span>),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                pl.col(<span class="st">'Variable Name'</span>).<span class="bu">str</span>.replace(<span class="st">'Population, '</span>, <span class="st">''</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                .<span class="bu">str</span>.replace(<span class="st">' </span><span class="ch">\\</span><span class="st">(Number</span><span class="ch">\\</span><span class="st">)'</span>, <span class="st">''</span>).alias(<span class="st">'gender'</span>),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                pl.col(<span class="st">'Age Name'</span>).alias(<span class="st">'age_category'</span>),</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>                pl.col(<span class="st">'2008'</span>).alias(<span class="st">'population'</span>),</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        .<span class="bu">filter</span>(</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>          (pl.col(<span class="st">'age_category'</span>) <span class="op">!=</span> <span class="st">"Total"</span>) <span class="op">&amp;</span> (pl.col(<span class="st">'gender'</span>) <span class="op">!=</span> <span class="st">"Total"</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        .drop_nulls()</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        .groupby(columns)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        .agg(</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>            [</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>                pl.col(<span class="st">'population'</span>).<span class="bu">sum</span>().alias(<span class="st">'total'</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>        .collect()</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> preprocessed_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then test the function with our dataset to ensure it works correctly.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>census_chatgpt <span class="op">=</span> preprocess_census_data(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  file_path <span class="op">=</span> file_path,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  columns <span class="op">=</span> [<span class="st">'state'</span>, <span class="st">'gender'</span>, <span class="st">'age_category'</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census_chatgpt.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (5, 4)
+┌────────────────────────┬────────┬──────────────┬───────┐
+│ state                  ┆ gender ┆ age_category ┆ total │
+│ ---                    ┆ ---    ┆ ---          ┆ ---   │
+│ str                    ┆ str    ┆ str          ┆ i64   │
+╞════════════════════════╪════════╪══════════════╪═══════╡
+│ Warrap                 ┆ Male   ┆ 20 to 24     ┆ 34342 │
+│ Western Bahr el Ghazal ┆ Female ┆ 25 to 29     ┆ 15168 │
+│ Unity                  ┆ Female ┆ 25 to 29     ┆ 23071 │
+│ Warrap                 ┆ Female ┆ 65+          ┆ 10625 │
+│ Western Bahr el Ghazal ┆ Male   ┆ 40 to 44     ┆ 8171  │
+└────────────────────────┴────────┴──────────────┴───────┘</code></pre>
+</div>
+</div>
+<p>In the below code chunk, we call upon the function <strong><code>preprocess_census_data</code></strong> to cleanse, transform, and summarize our census data by state. We provide two parameters to this function:</p>
+<ol type="1">
+<li><p><strong><code>file_path = file_path</code></strong>: This parameter sets the path of the file from which we want to read the census data. The exact path depends on the value stored in <strong><code>file_path</code></strong> variable in your code.</p></li>
+<li><p><strong><code>columns = ['state']</code></strong>: With this parameter, we instruct the function to group the processed data by the ‘state’ column.</p></li>
+</ol>
+<p>The result of this function call, which should be a preprocessed and state-grouped DataFrame, is then stored in the variable <strong><code>census_by_state</code></strong>.</p>
+<p>Next, we print the first 10 rows of the resulting DataFrame with <strong><code>print(census_by_state.head(10))</code></strong>. The <strong><code>head(10)</code></strong> method in Polars, similar to that in Pandas, retrieves the first 10 rows of the DataFrame for a quick glance at our transformed data. This step provides a quick verification of our data processing and grouping tasks.</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>census_by_state <span class="op">=</span> preprocess_census_data(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  file_path <span class="op">=</span> file_path,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  columns <span class="op">=</span> [<span class="st">'state'</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census_by_state.head(<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (10, 2)
+┌─────────────────────────┬─────────┐
+│ state                   ┆ total   │
+│ ---                     ┆ ---     │
+│ str                     ┆ i64     │
+╞═════════════════════════╪═════════╡
+│ Northern Bahr el Ghazal ┆ 720898  │
+│ Lakes                   ┆ 695730  │
+│ Western Equatoria       ┆ 619029  │
+│ Central Equatoria       ┆ 1103557 │
+│ ...                     ┆ ...     │
+│ Western Bahr el Ghazal  ┆ 333431  │
+│ Eastern Equatoria       ┆ 906161  │
+│ Unity                   ┆ 585801  │
+│ Jonglei                 ┆ 1358602 │
+└─────────────────────────┴─────────┘</code></pre>
+</div>
+</div>
+<p>Next, we group our dataset by ‘state’ and ‘gender’. This operation allows us to perform computations on the data (such as summing or averaging) separately within each group, effectively giving us a summary of the data organized by both geographical region and gender.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>census_by_state_and_gender <span class="op">=</span> preprocess_census_data(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  file_path <span class="op">=</span> file_path,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  columns <span class="op">=</span> [<span class="st">'state'</span>, <span class="st">'gender'</span>]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census_by_state_and_gender.head(<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>shape: (10, 3)
+┌────────────────────────┬────────┬────────┐
+│ state                  ┆ gender ┆ total  │
+│ ---                    ┆ ---    ┆ ---    │
+│ str                    ┆ str    ┆ i64    │
+╞════════════════════════╪════════╪════════╡
+│ Jonglei                ┆ Female ┆ 624275 │
+│ Eastern Equatoria      ┆ Male   ┆ 465187 │
+│ Western Bahr el Ghazal ┆ Female ┆ 156391 │
+│ Central Equatoria      ┆ Female ┆ 521835 │
+│ ...                    ┆ ...    ┆ ...    │
+│ Western Equatoria      ┆ Male   ┆ 318443 │
+│ Lakes                  ┆ Male   ┆ 365880 │
+│ Warrap                 ┆ Male   ┆ 470734 │
+│ Unity                  ┆ Female ┆ 285554 │
+└────────────────────────┴────────┴────────┘</code></pre>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level1">
+<h1><strong>Conclusion</strong></h1>
+<p>In this tutorial, we have demonstrated how to effectively utilize the Polars library for data cleaning and transformation using the South Sudan 2008 Census dataset. Polars’ speed, efficiency, and easy syntax make it a valuable tool for data scientists dealing with large datasets. Remember, clean and well-structured data is the foundation of any successful data analysis project. Happy data cleaning!</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
