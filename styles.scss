@@ -1,0 +1,43 @@
+/*-- scss:defaults --*/
+$theme-black: #0d0c0c;
+$theme-white: #ffffff;
+$theme-teal: #142c2f;
+$theme-blue: #3268ad;
+
+@import 
+url(‘https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;1,400;1,600&display=swap’);
+
+@import 
+url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+@import 
+url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+@import 
+url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+@import 
+url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+$font-size-root: 20px;
+$h1-font-size: $font-size-root * 3;
+
+$body-bg: $theme-white;
+$body-color: $theme-black;
+$link-color: $theme-teal;
+$code-color: $theme-teal;
+
+/*-- scss:rules --*/
+h1 {
+	color: darken($theme-blue, 50%);
+	font-family: "Dancing Script";
+}
+
+h2, h3, h4, h5 {
+	color: $theme-blue;
+	font-family: "Pacifico";
+}
+
+body {
+	font-family: "Open Sans";
+}

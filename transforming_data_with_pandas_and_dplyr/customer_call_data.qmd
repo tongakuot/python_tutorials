@@ -1,14 +1,28 @@
 ---
 title: "Cleaning and Transforming Data with `pandas` and `dplyr` Libraries"
-format: html
+author: "Alier Reng"
+date: today
+date-format: full
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  html:
+    smooth-scroll: true
+theme: 
+  - styles.scss
 editor: visual
 ---
 
-## Harnessing the Power of `pandas` and `dplyr` Packages
+# Harnessing the Power of `pandas` and `dplyr` Packages
 
 In this tutorial, we will demonstrate how to clean and transform a customer call dataset with `pandas` and `dplyr`.
 We obtained this dataset from [Alex the Analyst's GitHub](https://github.com/AlexTheAnalyst/PandasYouTubeSeries/blob/main/Customer%20Call%20List.xlsx).
 And [his tutorial video is located here!](https://www.youtube.com/watch?v=bDhvCp3_lYw)
+
+In this revised version of the tutorial, we will incorporate improvement suggestions by [Andrea Dalseno](https://u.pcloud.link/publink/show?code=XZp7WvVZc9f8luCVwchYuQiBHh0sUfkEupvX#returl=https://u.pcloud.link/publink/show?code=XZp7WvVZc9f8luCVwchYuQiBHh0sUfkEupvX&page=login "Andrea Dalseno").
+While there are multiple ways to accomplish this task, it is always best practice to use robust approaches.
 
 ## Cleaning and Transforming Customer Call Dataset
 
@@ -26,32 +40,43 @@ Since we will be using both `R` and `Python`, we will load the `reticulate` libr
 # Libraries
 library(reticulate)
 library(tidyverse)
-
 ```
 
 Loading `Python` Libraries
 
 ```{python}
 #| message: false
+#| warning: false
 
 import pandas as pd
 import numpy as np
 from janitor import clean_names
-#import re
-#pd.options.mode.dtype_backend='pyarrow'
-#pd.read_csv(filename, engine='pyarrow', use_nullable_dtypes=True)
+import re
 ```
 
-# Importing the dataset
+## Importing the dataset
+
+In this section of the updated tutorial, we will first create a list of potential `NaN` values in case we encounter others that do not appear in our current dataset.
 
 ```{python}
+# Create a list of potential NaN values
+# -------------------------------------
+nan_strings = ['', '#N/A', '#N/A N/A', '#NA', '-1.#IND', '-1.#QNAN', '-NaN',                '-nan', '1.#IND', '1.#QNAN', '<NA>', 'N/A', 'NA', 'NULL',                   'NaN', 'None', 'n/a', 'nan', 'null', 'N/a', 'NaN',
+]
+
 # Loading the dataset
+# -------------------
 customer_raw = (
-  pd.read_excel('../00_data/Customer Call List.xlsx')
+  pd.read_excel(
+    '../00_data/Customer Call List.xlsx', 
+    na_values=nan_strings
+  )
   # Clean columns names
   .clean_names()
 )
 ```
+
+# Wrangling Customer Data with `pandas`
 
 Now let's kick things off with the **mighty** `pandas` to accomplish our task.
 Our objective in this project is to create a working customer list.
@@ -61,13 +86,14 @@ In other words, we only need to retain customers who have consented to being con
 # Adjusting pandas column display option
 pd.set_option("display.max_columns", None)
 
-# Make labels
-labels = {'Y': 'Yes', 'N': 'No'}
+# Make labels - updated using Andrea's suggestion
+labels = {'Y': 'Yes','YES':'Yes', 'YE':'Yes', 'N': 'No', 'NO':'No'}
 
 # Define a function to clean and format phone numbers
 def clean_phone_number(phone):
     # Convert the value to a string, and then remove non-alphanumeric characters
-    phone = re.sub(r'[^a-zA-Z0-9]', '', str(phone))
+    #phone = re.sub(r'[^a-zA-Z0-9]', '', str(phone))
+    phone = re.sub(r'\D', '', str(phone))
     
     # Check if the phone number has 10 digits
     if len(phone) == 10:
@@ -83,7 +109,9 @@ def clean_phone_number(phone):
 def clean_address(df):
     df[['street_address', 'state', 'zip_code']] = df['address'].str.split(',', n=2, expand=True)
     return df
+```
 
+```{python}
 # Clean and transform the data
 # ----------------------------
 customer_df = (
@@ -108,7 +136,116 @@ customer_df = (
 customer_df.head()
 ```
 
-## Replicating the Same Task in R
+## Regenerating the Same Results Using a Revised Function
+
+```{python}
+# Revised version
+# Define a function to clean last name
+def clean_last_name_revised(name):
+  if pd.isna(name):
+    return ''
+  # Remove non alphabetic characters but keeps spaces ' and -
+  name = re.sub(r"[^A-Za-z\-\s']", '', name).strip()
+  name = re.sub(r"\s+", " ", name)
+  return name
+
+# Clean and transform the data
+# ----------------------------
+customer_final = (
+  customer_raw
+  # Clean and transform column values
+  .assign(
+    last_name=lambda x: x['last_name'].apply(clean_last_name_revised),
+    paying_customer=lambda x: x['paying_customer'].replace(labels),
+    do_not_contact=lambda x: x['do_not_contact'].replace(labels),
+    phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
+  )
+  # Split address column into: Street Address, State, and Zip Code
+  .pipe(clean_address)
+  # Delete unwanted column
+  .drop(columns=['not_useful_column', 'address'])
+  .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
+  .rename(columns={'customerid': 'customer_id'})
+  .reset_index(drop=True)
+)
+
+# Inspecting the first 5 rows
+customer_df.head()
+```
+
+## Converting Code into a Function
+
+Now, let's convert our code into a function and write a Python module to manage our customer call data cleaning and transformation.
+
+```{python}
+def tweak_customer_call_data(df):
+  
+  # Define a function to clean and format phone numbers
+  def clean_phone_number(phone):
+    # Convert the value to a string, and then remove non-alphanumeric characters
+    phone = re.sub(r'\D', '', str(phone))
+    
+    # Check if the phone number has 10 digits
+    if len(phone) == 10:
+        # Format the phone number as xxx-xxx-xxxx
+        phone = f'{phone[:3]}-{phone[3:6]}-{phone[6:]}'
+    else:
+        # Handle other formats or invalid phone numbers
+        phone = np.nan
+    
+    return phone
+
+
+  # Define a function to clean last name
+  def clean_last_name_revised(name):
+    if pd.isna(name):
+      return ''
+    # Remove non alphabetic characters but keeps spaces ' and -
+    name = re.sub(r"[^A-Za-z\-\s']", '', name).strip()
+    name = re.sub(r"\s+", " ", name)
+    return name
+
+  # Clean and transform the data
+  # ----------------------------
+  return(
+    customer_raw
+    # Clean and transform column values
+    .assign(
+      last_name=lambda x: x['last_name'].apply(clean_last_name_revised),
+      paying_customer=lambda x: x['paying_customer'].replace(labels),
+      do_not_contact=lambda x: x['do_not_contact'].replace(labels),
+      phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
+    )
+    # Split address column into: Street Address, State, and Zip Code
+    .pipe(clean_address)
+    # Delete unwanted column
+    .drop(columns=['not_useful_column', 'address'])
+    .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
+    .rename(columns={'customerid': 'customer_id'})
+    .reset_index(drop=True)
+  )
+```
+
+## Testing the Function
+
+```{python}
+df = tweak_customer_call_data(customer_raw)
+df.head()
+```
+
+## Importing Our New Module
+
+Here we used `ChatGPT` to add a `docstring` to our function.
+
+```{python}
+# Load the Module
+import custopy as cy
+
+# Test the module
+customer = cy.tweak_customer_call_data(customer_raw)
+```
+
+# Replicating the Same Task in R
 
 Now let's turn to `dplyr` to accomplish the same task.
 Our objective in this project is to create a working customer list.
@@ -117,6 +254,8 @@ In other words, we only need to retain customers who have consented to being con
 ```{r}
 # Cleaning and transforming customer call dataset with dplyr
 # convert a pandas DataFrame into R dataframe
+pattern <- "[^A-Za-z\\-\\s']"
+phone_pattern <- "[a-zA-Z\\-\\|/]"
 customer_tbl <- py$customer_raw |> 
   
   # You can include or exclude columns using the select() function.
@@ -124,10 +263,10 @@ customer_tbl <- py$customer_raw |>
   
   # Tidy column values
   mutate(
-    last_name  = str_remove_all(last_name, "[/|_|...]") |> str_trim(),
-    phone_number = str_remove_all(phone_number, "[/|-]"),
-    phone_number = str_c(str_sub(phone_number, 1, 3), "-", 
-                         str_sub(phone_number, 4, 6), "-", 
+    last_name  = str_remove_all(last_name, pattern) |> str_trim(),
+    phone_number = as.numeric(str_remove_all(phone_number, phone_pattern)),
+    phone_number = str_c(str_sub(phone_number, 1, 3), "-",
+                         str_sub(phone_number, 4, 6), "-",
                          str_sub(phone_number, 7, 10)
                     )
   ) |> 
@@ -160,10 +299,16 @@ customer_tbl <- py$customer_raw |>
   
   # Remove unwanted rows
   filter(
-    do_not_contact != "Yes",
-    !is.na(phone_number) & phone_number != "NaN--"
+    do_not_contact != "Yes" & !is.na(phone_number) 
   ) |> 
   
   # Rename a column
   rename(customer_id = customerid)
 ```
+
+# Closing Remarks
+
+In this revised tutorial, we have incorporated Andrea's suggestions for best practices and code robustness.
+Additionally, we have made modifications to the R section of the code to reflect the same improvements as in the pandas section.We hope you will find this tutorial beneficial, and if you do, please leave us a comment and follow us \@tongakuot on LinkedIn, GitHub, and YouTube.
+
+**Happy Coding!**
