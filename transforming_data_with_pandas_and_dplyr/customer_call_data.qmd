@@ -293,7 +293,11 @@ labels = {'y': 'yes', 'ye':'yes', 'n': 'no'}
 column_names = {'customerid': 'customer_id'}
 
 # Test the module
-customer = cy.tweak_customer_call_data(customer_raw, labels, column_names)
+customer = cy.tweak_customer_call_data(
+  customer_raw, 
+  labels, 
+  column_names
+)
 ```
 
 # Replicating the Same Task in R
