@@ -1,7 +1,7 @@
 # Creating a Module for Our Customer Call Project
 
 # Define a function
-def tweak_customer_call_data(df):
+def tweak_customer_call_data(df, labels, column_names):
     """
     Clean and format customer call data.
 
@@ -36,9 +36,6 @@ def tweak_customer_call_data(df):
     import numpy as np
     import pandas as pd
     from janitor import clean_names
-    
-    # Make labels - updated using Andrea's suggestion
-    labels = {'Y': 'Yes', 'YES': 'Yes', 'YE': 'Yes', 'N': 'No', 'NO': 'No'}
 
     # Define a function to clean and format phone numbers
     def clean_phone_number(phone):
@@ -76,15 +73,15 @@ def tweak_customer_call_data(df):
         # Clean and transform column values
         .assign(
             last_name=lambda x: x['last_name'].apply(clean_last_name_revised),
-            paying_customer=lambda x: x['paying_customer'].replace(labels),
-            do_not_contact=lambda x: x['do_not_contact'].replace(labels),
+            paying_customer=lambda x: x['paying_customer'].str.lower().replace(labels),
+            do_not_contact=lambda x: x['do_not_contact'].str.lower().replace(labels),
             phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
         )
         # Split address column into: Street Address, State, and Zip Code
         .pipe(clean_address)
         # Delete unwanted columns
         .drop(columns=['not_useful_column', 'address'])
-        .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
-        .rename(columns={'customerid': 'customer_id'})
+        .query('~(do_not_contact == "yes" | do_not_contact.isna() | phone_number.isna())')
+        .rename(columns=column_names)
         .reset_index(drop=True)
     )
