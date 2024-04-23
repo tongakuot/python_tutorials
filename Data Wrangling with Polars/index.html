@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">Saturday, May 27, 2023</p>
+      <p class="date">Saturday, April 20, 2024</p>
     </div>
   </div>
   
@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="a-loading-the-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="a-loading-the-libraries"><strong>a) Loading the Libraries</strong></h2>
 <p>We begin by importing the necessary libraries. Our primary library is <code>Polars</code>, which we import under the alias ‘pl’. We also import the <code>os</code> library, which will help us with file path operations.</p>
-<div class="cell" data-execution_count="1">
+<div id="set-up" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -183,7 +183,7 @@ Tip
 <span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-hidden="true" tabindex="-1"></a>      (pl.col(<span class="st">'age_category'</span>) <span class="op">!=</span> <span class="st">"Total"</span>) <span class="op">&amp;</span> (pl.col(<span class="st">'gender'</span>) <span class="op">!=</span> <span class="st">"Total"</span>)</span>
 <span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-hidden="true" tabindex="-1"></a>    .drop_nulls()</span>
-<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">'state'</span>, <span class="st">'gender'</span>, <span class="st">'age_category'</span>])</span>
+<span id="annotated-cell-3-18"><a href="#annotated-cell-3-18" aria-hidden="true" tabindex="-1"></a>    .group_by([<span class="st">'state'</span>, <span class="st">'gender'</span>, <span class="st">'age_category'</span>])</span>
 <span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
 <span id="annotated-cell-3-20"><a href="#annotated-cell-3-20" aria-hidden="true" tabindex="-1"></a>        [</span>
 <span id="annotated-cell-3-21"><a href="#annotated-cell-3-21" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'population'</span>).<span class="bu">sum</span>().alias(<span class="st">'total'</span>)</span>
@@ -196,17 +196,17 @@ Tip
 <span id="annotated-cell-3-28"><a href="#annotated-cell-3-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census.collect().head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>shape: (5, 4)
-┌─────────────────────────┬────────┬──────────────┬───────┐
-│ state                   ┆ gender ┆ age_category ┆ total │
-│ ---                     ┆ ---    ┆ ---          ┆ ---   │
-│ str                     ┆ str    ┆ str          ┆ i64   │
-╞═════════════════════════╪════════╪══════════════╪═══════╡
-│ Jonglei                 ┆ Female ┆ 40 to 44     ┆ 29309 │
-│ Warrap                  ┆ Male   ┆ 5 to 9       ┆ 81314 │
-│ Northern Bahr el Ghazal ┆ Male   ┆ 10 to 14     ┆ 42046 │
-│ Upper Nile              ┆ Male   ┆ 15 to 19     ┆ 57387 │
-│ Jonglei                 ┆ Male   ┆ 45 to 49     ┆ 24907 │
-└─────────────────────────┴────────┴──────────────┴───────┘</code></pre>
+┌───────────────────┬────────┬──────────────┬───────┐
+│ state             ┆ gender ┆ age_category ┆ total │
+│ ---               ┆ ---    ┆ ---          ┆ ---   │
+│ str               ┆ str    ┆ str          ┆ i64   │
+╞═══════════════════╪════════╪══════════════╪═══════╡
+│ Western Equatoria ┆ Female ┆ 60 to 64     ┆ 4345  │
+│ Lakes             ┆ Male   ┆ 45 to 49     ┆ 13279 │
+│ Jonglei           ┆ Female ┆ 55 to 59     ┆ 7769  │
+│ Eastern Equatoria ┆ Male   ┆ 35 to 39     ┆ 23364 │
+│ Lakes             ┆ Female ┆ 15 to 19     ┆ 33747 │
+└───────────────────┴────────┴──────────────┴───────┘</code></pre>
 </div>
 </div>
 <p>The above code performs several data manipulation tasks on a CSV file containing census data:</p>
@@ -221,7 +221,7 @@ Tip
 </ul></li>
 <li><p><strong><code>.filter((pl.col('age_category') != "Total") &amp; (pl.col('gender') != "Total"))</code></strong>: This line filters the DataFrame, keeping only rows where ‘age_category’ and ‘gender’ are not ‘Total’.</p></li>
 <li><p><strong><code>.drop_nulls()</code></strong>: This line removes any rows from the DataFrame that contain null values.</p></li>
-<li><p><strong><code>.groupby(['state', 'gender', 'age_category'])</code></strong>: This line groups the DataFrame by the ‘state’, ‘gender’, and ‘age_category’ columns.</p></li>
+<li><p><strong><code>.group_by(['state', 'gender', 'age_category'])</code></strong>: This line groups the DataFrame by the ‘state’, ‘gender’, and ‘age_category’ columns.</p></li>
 <li><p><strong><code>.agg([pl.col('population').sum().alias('total')])</code></strong>: This line calculates the sum of the ‘population’ column within each group (created by the groupby operation), and names this new column ‘total’.</p></li>
 </ol>
 <p>Finally, <strong><code>print(census.collect().head())</code></strong> prints the first few rows of the transformed DataFrame to give a preview of the resulting data structure. The <strong><code>collect()</code></strong> function is called to execute all the lazy operations and return the DataFrame.</p>
@@ -249,7 +249,7 @@ Tip
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      (pl.col(<span class="st">'age_category'</span>) <span class="op">!=</span> <span class="st">"Total"</span>) <span class="op">&amp;</span> (pl.col(<span class="st">'gender'</span>) <span class="op">!=</span> <span class="st">"Total"</span>)</span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    .drop_nulls()</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    .groupby(columns)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    .group_by(columns)</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        [</span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            pl.col(<span class="st">'population'</span>).<span class="bu">sum</span>().alias(<span class="st">'total'</span>)</span>
@@ -274,17 +274,17 @@ Tip
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>shape: (5, 4)
-┌─────────────────────────┬────────┬──────────────┬───────┐
-│ state                   ┆ gender ┆ age_category ┆ total │
-│ ---                     ┆ ---    ┆ ---          ┆ ---   │
-│ str                     ┆ str    ┆ str          ┆ i64   │
-╞═════════════════════════╪════════╪══════════════╪═══════╡
-│ Unity                   ┆ Female ┆ 30 to 34     ┆ 18079 │
-│ Eastern Equatoria       ┆ Female ┆ 65+          ┆ 8637  │
-│ Warrap                  ┆ Male   ┆ 15 to 19     ┆ 44951 │
-│ Northern Bahr el Ghazal ┆ Male   ┆ 55 to 59     ┆ 6330  │
-│ Central Equatoria       ┆ Male   ┆ 45 to 49     ┆ 19463 │
-└─────────────────────────┴────────┴──────────────┴───────┘</code></pre>
+┌─────────┬────────┬──────────────┬────────┐
+│ state   ┆ gender ┆ age_category ┆ total  │
+│ ---     ┆ ---    ┆ ---          ┆ ---    │
+│ str     ┆ str    ┆ str          ┆ i64    │
+╞═════════╪════════╪══════════════╪════════╡
+│ Lakes   ┆ Female ┆ 15 to 19     ┆ 33747  │
+│ Unity   ┆ Female ┆ 20 to 24     ┆ 25687  │
+│ Jonglei ┆ Male   ┆ 0 to 4       ┆ 115806 │
+│ Lakes   ┆ Male   ┆ 5 to 9       ┆ 57417  │
+│ Warrap  ┆ Male   ┆ 20 to 24     ┆ 34342  │
+└─────────┴────────┴──────────────┴────────┘</code></pre>
 </div>
 </div>
 <p>Next, we will request assistance from <code>ChatGPT</code> to enhance our function and to include a comprehensive <code>docstring</code> for better documentation and understanding.</p>
@@ -320,7 +320,7 @@ Tip
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>          (pl.col(<span class="st">'age_category'</span>) <span class="op">!=</span> <span class="st">"Total"</span>) <span class="op">&amp;</span> (pl.col(<span class="st">'gender'</span>) <span class="op">!=</span> <span class="st">"Total"</span>)</span>
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        )</span>
 <span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        .drop_nulls()</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        .groupby(columns)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        .group_by(columns)</span>
 <span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        .agg(</span>
 <span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>            [</span>
 <span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>                pl.col(<span class="st">'population'</span>).<span class="bu">sum</span>().alias(<span class="st">'total'</span>)</span>
@@ -341,17 +341,17 @@ Tip
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census_chatgpt.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>shape: (5, 4)
-┌────────────────────────┬────────┬──────────────┬───────┐
-│ state                  ┆ gender ┆ age_category ┆ total │
-│ ---                    ┆ ---    ┆ ---          ┆ ---   │
-│ str                    ┆ str    ┆ str          ┆ i64   │
-╞════════════════════════╪════════╪══════════════╪═══════╡
-│ Warrap                 ┆ Male   ┆ 20 to 24     ┆ 34342 │
-│ Western Bahr el Ghazal ┆ Female ┆ 25 to 29     ┆ 15168 │
-│ Unity                  ┆ Female ┆ 25 to 29     ┆ 23071 │
-│ Warrap                 ┆ Female ┆ 65+          ┆ 10625 │
-│ Western Bahr el Ghazal ┆ Male   ┆ 40 to 44     ┆ 8171  │
-└────────────────────────┴────────┴──────────────┴───────┘</code></pre>
+┌─────────────────────────┬────────┬──────────────┬───────┐
+│ state                   ┆ gender ┆ age_category ┆ total │
+│ ---                     ┆ ---    ┆ ---          ┆ ---   │
+│ str                     ┆ str    ┆ str          ┆ i64   │
+╞═════════════════════════╪════════╪══════════════╪═══════╡
+│ Unity                   ┆ Male   ┆ 40 to 44     ┆ 9702  │
+│ Central Equatoria       ┆ Male   ┆ 50 to 54     ┆ 13104 │
+│ Western Bahr el Ghazal  ┆ Female ┆ 65+          ┆ 3527  │
+│ Northern Bahr el Ghazal ┆ Female ┆ 55 to 59     ┆ 6273  │
+│ Western Bahr el Ghazal  ┆ Male   ┆ 30 to 34     ┆ 12496 │
+└─────────────────────────┴────────┴──────────────┴───────┘</code></pre>
 </div>
 </div>
 <p>In the below code chunk, we call upon the function <strong><code>preprocess_census_data</code></strong> to cleanse, transform, and summarize our census data by state. We provide two parameters to this function:</p>
@@ -375,15 +375,16 @@ Tip
 │ ---                     ┆ ---     │
 │ str                     ┆ i64     │
 ╞═════════════════════════╪═════════╡
-│ Northern Bahr el Ghazal ┆ 720898  │
-│ Lakes                   ┆ 695730  │
+│ Unity                   ┆ 585801  │
+│ Warrap                  ┆ 972928  │
+│ Eastern Equatoria       ┆ 906161  │
 │ Western Equatoria       ┆ 619029  │
 │ Central Equatoria       ┆ 1103557 │
-│ ...                     ┆ ...     │
+│ Lakes                   ┆ 695730  │
+│ Upper Nile              ┆ 964353  │
 │ Western Bahr el Ghazal  ┆ 333431  │
-│ Eastern Equatoria       ┆ 906161  │
-│ Unity                   ┆ 585801  │
 │ Jonglei                 ┆ 1358602 │
+│ Northern Bahr el Ghazal ┆ 720898  │
 └─────────────────────────┴─────────┘</code></pre>
 </div>
 </div>
@@ -397,27 +398,29 @@ Tip
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(census_by_state_and_gender.head(<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>shape: (10, 3)
-┌────────────────────────┬────────┬────────┐
-│ state                  ┆ gender ┆ total  │
-│ ---                    ┆ ---    ┆ ---    │
-│ str                    ┆ str    ┆ i64    │
-╞════════════════════════╪════════╪════════╡
-│ Jonglei                ┆ Female ┆ 624275 │
-│ Eastern Equatoria      ┆ Male   ┆ 465187 │
-│ Western Bahr el Ghazal ┆ Female ┆ 156391 │
-│ Central Equatoria      ┆ Female ┆ 521835 │
-│ ...                    ┆ ...    ┆ ...    │
-│ Western Equatoria      ┆ Male   ┆ 318443 │
-│ Lakes                  ┆ Male   ┆ 365880 │
-│ Warrap                 ┆ Male   ┆ 470734 │
-│ Unity                  ┆ Female ┆ 285554 │
-└────────────────────────┴────────┴────────┘</code></pre>
+┌─────────────────────────┬────────┬────────┐
+│ state                   ┆ gender ┆ total  │
+│ ---                     ┆ ---    ┆ ---    │
+│ str                     ┆ str    ┆ i64    │
+╞═════════════════════════╪════════╪════════╡
+│ Upper Nile              ┆ Female ┆ 438923 │
+│ Lakes                   ┆ Male   ┆ 365880 │
+│ Northern Bahr el Ghazal ┆ Male   ┆ 348290 │
+│ Jonglei                 ┆ Female ┆ 624275 │
+│ Central Equatoria       ┆ Male   ┆ 581722 │
+│ Upper Nile              ┆ Male   ┆ 525430 │
+│ Western Bahr el Ghazal  ┆ Male   ┆ 177040 │
+│ Lakes                   ┆ Female ┆ 329850 │
+│ Unity                   ┆ Male   ┆ 300247 │
+│ Western Equatoria       ┆ Male   ┆ 318443 │
+└─────────────────────────┴────────┴────────┘</code></pre>
 </div>
 </div>
 </section>
 <section id="conclusion" class="level1">
 <h1><strong>Conclusion</strong></h1>
-<p>In this tutorial, we have demonstrated how to effectively utilize the Polars library for data cleaning and transformation using the South Sudan 2008 Census dataset. Polars’ speed, efficiency, and easy syntax make it a valuable tool for data scientists dealing with large datasets. Remember, clean and well-structured data is the foundation of any successful data analysis project. Happy data cleaning!</p>
+<p>In this tutorial, we have demonstrated how to effectively utilize the Polars library for data cleaning and transformation using the South Sudan 2008 Census dataset. Polars’ speed, efficiency, and easy syntax make it a valuable tool for data scientists dealing with large datasets. Remember, clean and well-structured data is the foundation of any successful data analysis project.</p>
+<p><strong>Happy data cleaning!</strong></p>
 </section>
 
 </main>
