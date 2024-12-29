@@ -1,0 +1,252 @@
+---
+title: 'Cleaning and Transforming Data with `pandas`'
+author: "Alier Reng"
+date: today
+date-format: full
+format: html
+jupyter: python3
+---
+
+```{python}
+%pip install pyarrow
+```
+```{python}
+#| message: false
+#| warning: false
+
+import pandas as pd
+import sys
+import numpy as np
+from janitor import clean_names
+import re
+print(f'My system version is {sys.version}\nPandas version is {pd.__version__}')
+```
+
+```{python}
+# Create a list of potential NaN values
+# -------------------------------------
+nan_strings = [
+    '', '#N/A', '#N/A N/A', '#NA', '-1.#IND', '-1.#QNAN', '-NaN',         '-nan', '1.#IND', '1.#QNAN', '<NA>', 'N/A', 'NA', 'NULL',            'NaN', 'None', 'n/a', 'nan', 'null', 'N/a', 'NaN',
+]
+
+# Loading the dataset
+# -------------------
+customer_raw = (
+  pd.read_excel(
+    '../00_data/Customer Call List.xlsx',
+    dtype_backend='pyarrow',
+    na_values=nan_strings
+  )
+  # Clean columns names
+  .clean_names()
+)
+print(customer_raw.head())
+```
+
+
+```{python}
+# Adjusting pandas column display option
+pd.set_option("display.max_columns", None)
+
+# Make labels - updated using Andrea's suggestion
+labels = {'Y': 'Yes','YES':'Yes', 'YE':'Yes', 'N': 'No', 'NO':'No'}
+
+# Define a function to clean and format phone numbers
+def clean_phone_number(phone):
+    # Convert the value to a string, and then remove non-alphanumeric characters
+    #phone = re.sub(r'[^a-zA-Z0-9]', '', str(phone))
+    phone = re.sub(r'\D', '', str(phone))
+    
+    # Check if the phone number has 10 digits
+    if len(phone) == 10:
+        # Format the phone number as xxx-xxx-xxxx
+        phone = f'{phone[:3]}-{phone[3:6]}-{phone[6:]}'
+    else:
+        # Handle other formats or invalid phone numbers
+        phone = np.nan
+    
+    return phone
+
+# Define a function to clean and transform the address column
+def clean_address(df):
+    df[['street_address', 'state', 'zip_code']] = df['address'].str.split(',', n=2, expand=True)
+    return df
+```
+
+
+```{python}
+# Clean and transform the data
+customer_df = (
+  # Clean and transform column values
+  customer_raw  
+  .rename(columns={'customerid': 'customer_id'})
+  .assign(
+    last_name=lambda x: x['last_name'].str.strip('/|...|_').str.strip(' '),
+    paying_customer=lambda x: x['paying_customer'].replace(labels),
+    do_not_contact=lambda x: x['do_not_contact'].replace(labels),
+    phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
+  )
+  # Split address column into: Street Address, State, and Zip Code
+  .pipe(clean_address)
+  # Delete unwanted column
+  .drop(columns=['not_useful_column', 'address'])
+  .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
+  .reset_index(drop=True)
+)
+
+# Inspecting the first 5 rows
+customer_df.head()
+```
+
+
+```{python}
+# Revised version
+# Define a function to clean last name
+def clean_last_name_revised(name):
+  if pd.isna(name):
+    return ''
+  # Remove non alphabetic characters but keeps spaces ' and -
+  name = re.sub(r"[^A-Za-z\-\s']", '', name).strip()
+  name = re.sub(r"\s+", " ", name)
+  return name
+
+# Clean and transform the data
+# ----------------------------
+customer = (
+  customer_raw
+  # Clean and transform column values
+  .assign(
+    last_name=lambda x: x['last_name'].apply(clean_last_name_revised),
+    paying_customer=lambda x: x['paying_customer'].replace(labels),
+    do_not_contact=lambda x: x['do_not_contact'].replace(labels),
+    phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
+  )
+  # Split address column into: Street Address, State, and Zip Code
+  .pipe(clean_address)
+  # Delete unwanted column
+  .drop(columns=['not_useful_column', 'address'])
+  .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
+  .rename(columns={'customerid': 'customer_id'})
+  .reset_index(drop=True)
+)
+
+# Inspecting the first 5 rows
+customer
+```
+
+
+```{python}
+# Define a function
+column_names = {'customerid': 'customer_id'}
+def tweak_customer_call_data(df, labels, column_names):
+    """
+    Clean and format customer call data.
+
+    This function takes a DataFrame as input, performs various data cleaning and
+    formatting operations on it, and returns the cleaned DataFrame.
+
+    Parameters:
+    df (pandas.DataFrame): The input DataFrame containing customer call data.
+
+    Returns:
+    pandas.DataFrame: A cleaned and formatted DataFrame with the following
+    modifications:
+    - Cleaned last names in the 'last_name' column.
+    - Transformed 'paying_customer' and 'do_not_contact' columns.
+    - Cleaned and formatted 'phone_number' column.
+    - Split 'address' column into 'Street Address', 'State', and 'Zip Code'.
+    - Dropped unwanted columns 'not_useful_column' and 'address'.
+    - Filtered rows where 'do_not_contact' is not 'Yes' or is not NaN and 'phone_number' is not NaN.
+    - Renamed the 'customerid' column to 'customer_id'.
+    - Reset the DataFrame index.
+
+    Notes:
+    - The 'clean_last_name_revised' function is used to clean the 'last_name' column.
+    - The 'clean_phone_number' function is used to clean and format phone numbers.
+    - The 'clean_address' function is used to split the 'address' column into 'Street Address', 'State', and 'Zip Code'.
+
+    Example:
+    df = tweak_customer_call_data(customer_raw)
+    """
+    # Include required libraries
+    import re
+    import numpy as np
+    import pandas as pd
+    # from janitor import clean_names
+    
+    # Make labels - updated using Andrea's suggestion
+    #labels = {'Y': 'Yes', 'YES': 'Yes', 'YE': 'Yes', 'N': 'No', 'NO': 'No'}
+
+    # Define a function to clean and format phone numbers
+    def clean_phone_number(phone):
+        # Convert the value to a string, and then remove non-alphanumeric characters
+        phone = re.sub(r'\D', '', str(phone))
+
+        # Check if the phone number has 10 digits
+        if len(phone) == 10:
+            # Format the phone number as xxx-xxx-xxxx
+            phone = f'{phone[:3]}-{phone[3:6]}-{phone[6:]}'
+        else:
+            # Handle other formats or invalid phone numbers
+            phone = np.nan
+
+        return phone
+
+    # Define a function to clean last names
+    def clean_last_name_revised(name):
+        if pd.isna(name):
+            return ''
+        # Remove non-alphabetic characters but keep spaces, single quotes, and hyphens
+        name = re.sub(r"[^A-Za-z\-\s']", '', name).strip()
+        name = re.sub(r"\s+", " ", name)
+        return name
+
+    # Define a function to clean and transform the address column
+    def clean_address(df):
+        df[['street_address', 'state', 'zip_code']] = df['address'].str.split(',', n=2, expand=True)
+        return df
+
+    # Clean and transform the data
+    # ----------------------------
+    return (
+        df
+        # Clean and transform column values
+        .assign(
+            last_name=lambda x: x['last_name'].apply(clean_last_name_revised),
+            paying_customer=lambda x: x['paying_customer'].str.lower().replace(labels),
+            do_not_contact=lambda x: x['do_not_contact'].str.lower().replace(labels),
+            phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
+        )
+        # Split address column into: Street Address, State, and Zip Code
+        .pipe(clean_address)
+        # Delete unwanted columns
+        .drop(columns=['not_useful_column', 'address'])
+        .query('~(do_not_contact == "yes" | do_not_contact.isna() | phone_number.isna())')
+        .rename(columns=column_names)
+        .reset_index(drop=True)
+    )
+```
+
+
+```{python}
+# Make labels - updated using Andrea's suggestion
+labels = {'y': 'yes', 'ye':'yes', 'n': 'no'}
+column_names = {'customerid': 'customer_id'}
+df = tweak_customer_call_data(customer_raw, labels, column_names)
+df.head()
+```
+
+
+```{python}
+# Load the Module
+import custopy as cy
+
+# Make labels - updated using Andrea's suggestion
+labels = {"y": "yes", "ye": "yes", "n": "no"}
+column_names = {"customerid": "customer_id"}
+
+# Test the module
+customer = cy.tweak_customer_call_data(customer_raw, labels, column_names)
+
+customer
+```

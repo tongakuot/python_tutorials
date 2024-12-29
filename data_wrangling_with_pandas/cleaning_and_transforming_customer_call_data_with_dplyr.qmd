@@ -1,0 +1,77 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+```{r}
+#| warning: false
+#| message: false
+
+# Load libraries
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+
+```{r}
+customer_raw = read_csv("00_data/Customer Call List.xlsx")
+
+customer_raw
+```
+
+
+```{r}
+# Cleaning and transforming customer call dataset with dplyr
+# convert a pandas DataFrame into R dataframe
+pattern <- "[^A-Za-z\\-\\s']"
+phone_pattern <- "[a-zA-Z\\-\\|/]"
+customer_tbl <- py$customer_raw |> 
+  
+  # You can include or exclude columns using the select() function.
+  select(-not_useful_column) |> 
+  
+  # Tidy column values
+  mutate(
+    last_name  = str_remove_all(last_name, pattern) |> str_trim(),
+    phone_number = as.numeric(str_remove_all(phone_number, phone_pattern)),
+    phone_number = str_c(str_sub(phone_number, 1, 3), "-",
+                         str_sub(phone_number, 4, 6), "-",
+                         str_sub(phone_number, 7, 10)
+                    )
+  ) |> 
+  
+  # Separate address column into street address, state, and zip code
+  separate_wider_delim(
+    address,
+    delim = ",",
+    names = c("street_address", "state", "zip_code"),
+    too_few = "align_start"
+  ) |> 
+  
+  # Modify column values
+  mutate(
+    paying_customer = case_when(
+      paying_customer == "Y" ~ "Yes",
+      paying_customer == "N" ~ "No",
+      TRUE ~ paying_customer
+    )
+  ) |> 
+  
+  # Alternative method
+  mutate(
+    do_not_contact = case_when(
+      str_detect(do_not_contact, "Y") ~ "Yes",
+      str_detect(do_not_contact, "N") ~ "No",
+      TRUE ~ do_not_contact
+    )
+  ) |> 
+  
+  # Remove unwanted rows
+  filter(
+    do_not_contact != "Yes" & !is.na(phone_number) 
+  ) |> 
+  
+  # Rename a column
+  rename(customer_id = customerid)
+```

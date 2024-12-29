@@ -1,0 +1,246 @@
+---
+title: "Beginner's Guide to Data Cleaning and Transformation with Polars"
+author: "Alier Reng"
+date: 2024-04-20
+date-format: full
+description: "Discover the power of the Polars library for efficient data cleaning and transformation in Python. This tutorial showcases how to leverage Polars' speed and intuitive syntax to preprocess a real-world dataset - the South Sudan 2008 Census. You'll learn how to load, clean, and transform data using method chaining, and encapsulate the entire process into a reusable function. Jump in to enhance your data science toolkit with Polars, and make your data ready for insightful analysis!"
+categories: [Data Wrangling, Python, Polars]
+image: "polars_img.png"
+
+jupyter: python3
+execute:
+  freeze: true
+  
+editor: visual
+code-block-bg: true
+code-block-border-left: "#4CAF50"
+---
+
+# **Motivation**
+
+Data science is an iterative process, often requiring numerous repetitions of steps like cleaning, transformation, and analysis. Efficiency and speed are vital in this repetitive cycle, and that's where the Polars library comes into play. Polars is a DataFrame library implemented in Rust and Python, offering performance benefits, particularly with larger datasets. In this tutorial, we'll explore how to leverage Polars to clean and transform data using a fascinating dataset: the South Sudan 2008 Census dataset.
+
+# **Introduction**
+
+Polars is a library well-suited for out-of-core computation, making it an excellent choice for large datasets that do not fit in memory. It boasts lightning-fast operation speeds and is highly parallelized, making it a powerful tool for data scientists and analysts. Our task today involves cleaning and transforming a real-world dataset, the South Sudan 2008 Census dataset. This data presents us with practical challenges and serves as an excellent example to demonstrate the capabilities of the Polars library.
+
+# **Data Cleaning and Transformation**
+
+In the following steps, we illustrate how to load the libraries and import the dataset with the `Polars` Python library.
+
+## **a) Loading the Libraries**
+
+We begin by importing the necessary libraries. Our primary library is `Polars`, which we import under the alias 'pl'. We also import the `os` library, which will help us with file path operations.
+
+```{python}
+#| message: false
+#| warning: false
+#| label: set-up
+# Libraries
+import polars as pl
+import os
+from pathlib import Path
+```
+
+## **b) Importing the Dataset**
+
+Our next step involves reading the dataset. We first identify the file's location and use `Polars`' scan_csv function to read the data into a DataFrame. To handle any missing data, we specify 'NA' as a null value.
+
+```{python}
+# Set relative path
+file_name = '../00_data/ss_2008_census_data_raw.csv'
+
+```
+
+Our data cleaning and transformation process involves selecting specific columns, renaming them, replacing specific strings, filtering, dropping nulls, and grouping the data. We execute these steps using method chaining, which is one of the Polars library's convenient features.
+
+::: callout-tip
+It's worth noting that `Polars` handles missing values differently from `Pandas`. Therefore, you need to identify how missing values are represented in your dataset before importing it. If you don't, you may encounter an error message.
+:::
+
+```{python}
+# Read in the file with polars; clean and transform
+# -------------------------------------------------
+census = (
+    pl.scan_csv(file_name, null_values='NA') # <1>
+    .select(
+        pl.col('Region Name').alias('state'),
+        pl.col('Variable Name').str.replace('Population, ', '').str.replace(' \\(Number\\)', '').alias('gender'),
+        pl.col('Age Name').alias('age_category'),
+        pl.col('2008').alias('population')
+    ) # <2>
+    .filter(
+      (pl.col('age_category') != "Total") & (pl.col('gender') != "Total")
+    ) # <3>
+    .drop_nulls() # <4>
+    .group_by(['state', 'gender', 'age_category']) # <5>
+    .agg(pl.col('population').sum().alias('total')) # <6>
+)
+
+# Inspect the first few rows
+# --------------------------
+print(census.collect().head()) # <7>
+```
+
+The above code performs several data manipulation tasks on a CSV file containing census data:
+
+1.  **`pl.scan_csv(file_path, null_values='NA')`**: This line reads a CSV file from the given file path, treating 'NA' as a null value. The file's contents are loaded into a Polars DataFrame.
+
+2.  **`.select(...)`**: This line selects specific columns from the DataFrame and does some transformations:
+
+    -   **`pl.col('Region Name').alias('state')`**: This selects the column 'Region Name' and renames it to 'state'.
+
+    -   **`pl.col('Variable Name').str.replace('Population, ', '').str.replace(' \\(Number\\)', '').alias('gender')`**: This selects the 'Variable Name' column, replaces the string 'Population,' with nothing, replaces ' \\(Number\\)' also with nothing, and renames the column to 'gender'.
+
+    -   **`pl.col('Age Name').alias('age_category')`**: This selects the 'Age Name' column and renames it to 'age_category'.
+
+    -   **`pl.col('2008').alias('population')`**: This selects the '2008' column and renames it to 'population'.
+
+3.  **`.filter((pl.col('age_category') != "Total") & (pl.col('gender') != "Total"))`**: This line filters the DataFrame, keeping only rows where 'age_category' and 'gender' are not 'Total'.
+
+4.  **`.drop_nulls()`**: This line removes any rows from the DataFrame that contain null values.
+
+5.  **`.group_by('state', 'gender', 'age_category')`**: This line groups the DataFrame by the 'state', 'gender', and 'age_category' columns.
+
+6.  **`.agg(pl.col('population').sum().alias('total'))`**: This line calculates the sum of the 'population' column within each group (created by the groupby operation), and names this new column 'total'.
+
+Finally, **`print(census.collect().head())`** prints the first few rows of the transformed DataFrame to give a preview of the resulting data structure. The **`collect()`** function is called to execute all the lazy operations and return the DataFrame.
+
+# **Converting the Code into a Function**
+
+For better reusability and modularity, we encapsulate the data cleaning and transformation process into a function named 'tweak_census_data'. The function takes in a file path and a list of grouping columns as arguments and returns a cleaned_df DataFrame.
+
+```{python}
+# Write a function
+def tweak_census_data(file_path: str, columns: list[str]) -> pl.DataFrame:
+    """
+    Clean and transform the South Sudan census data.
+    Params:
+        file_pth(str): Directory where the data is located.
+        columns(list[str]): Columns we want to keep.
+    Return:
+      pl.DataFrame: Cleaned and transforme Polars DataFrame.
+    """
+    return(
+        pl.scan_csv(file_name, null_values='NA')
+        .select(
+            state=pl.col('Region Name'),
+            gender=pl.col('Variable Name').str.replace('Population, ', '')
+                .str.replace(' \\(Number\\)', ''),
+            age_category=pl.col('Age Name'),
+            population=pl.col('2008')
+        )
+        .filter(
+          (pl.col('age_category') != 'Total') & (pl.col('gender') != 'Total')
+        )
+        .drop_nulls()
+        .group_by(columns)
+        .agg(pl.col('population').sum().alias('total'))
+        .collect()
+       )
+```
+
+We then test the function with our dataset to ensure it works correctly.
+
+```{python}
+# Testing the function
+# --------------------
+census = tweak_census_data(
+  file_path = file_name,
+  columns = ['state', 'gender', 'age_category']
+)
+
+# Inspect the first 5 rows
+# ------------------------
+print(census.head())
+```
+
+Next, we will request assistance from `ChatGPT` to enhance our function and to include a comprehensive `docstring` for better documentation and understanding.
+
+```{python}
+#| code-overflow: wrap
+
+
+def preprocess_census_data(file_path: str, columns: list[str]) -> pl.Expr:
+    """
+    This function reads a CSV file, preprocesses the data, and returns a data frame.
+    Preprocessing includes selecting specific columns, renaming them, replacing specific strings,
+    filtering, dropping nulls, and grouping the data.
+
+    :param file_path: The path to the CSV file.
+    :param columns: The columns to group by.
+    :return: A Polars DataFrame after preprocessing.
+    """
+    try:
+        raw_data = pl.scan_csv(file_name, null_values='NA')
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    
+    preprocessed_data = (
+        raw_data
+        .select(pl.col('Region Name').alias('state'),
+                pl.col('Variable Name').str.replace('Population, ', '')
+                .str.replace(' \\(Number\\)', '').alias('gender'),
+                pl.col('Age Name').alias('age_category'),
+                pl.col('2008').alias('population')
+        )
+        .filter(
+          (pl.col('age_category') != "Total") & (pl.col('gender') != "Total")
+        )
+        .drop_nulls()
+        .group_by(columns)
+        .agg(pl.col('population').sum().alias('total'))
+        .collect()
+    )
+    
+    return preprocessed_data
+
+```
+
+We then test the function with our dataset to ensure it works correctly.
+
+```{python}
+census_chatgpt = preprocess_census_data(
+  file_path = file_name,
+  columns = ['state', 'gender', 'age_category']
+)
+
+print(census_chatgpt.head())
+```
+
+In the below code chunk, we call upon the function **`preprocess_census_data`** to cleanse, transform, and summarize our census data by state. We provide two parameters to this function:
+
+1.  **`file_path = file_path`**: This parameter sets the path of the file from which we want to read the census data. The exact path depends on the value stored in **`file_path`** variable in your code.
+
+2.  **`columns = ['state']`**: With this parameter, we instruct the function to group the processed data by the 'state' column.
+
+The result of this function call, which should be a preprocessed and state-grouped DataFrame, is then stored in the variable **`census_by_state`**.
+
+Next, we print the first 10 rows of the resulting DataFrame with **`print(census_by_state.head(10))`**. The **`head(10)`** method in Polars, similar to that in Pandas, retrieves the first 10 rows of the DataFrame for a quick glance at our transformed data. This step provides a quick verification of our data processing and grouping tasks.
+
+```{python}
+census_by_state = preprocess_census_data(
+  file_path = file_name,
+  columns = ['state']
+)
+
+print(census_by_state.head(10))
+```
+
+Next, we group our dataset by 'state' and 'gender'. This operation allows us to perform computations on the data (such as summing or averaging) separately within each group, effectively giving us a summary of the data organized by both geographical region and gender.
+
+```{python}
+census_by_state_and_gender = preprocess_census_data(
+  file_path = file_name,
+  columns = ['state', 'gender']
+)
+
+print(census_by_state_and_gender.head(10))
+```
+
+# **Conclusion**
+
+In this tutorial, we have demonstrated how to effectively utilize the Polars library for data cleaning and transformation using the South Sudan 2008 Census dataset. Polars' speed, efficiency, and easy syntax make it a valuable tool for data scientists dealing with large datasets. Remember, clean and well-structured data is the foundation of any successful data analysis project.
+
+**Happy data cleaning!**
