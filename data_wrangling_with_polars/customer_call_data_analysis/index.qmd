@@ -1,0 +1,87 @@
+---
+title: 'Cleaning and Transforming Customer Call Data with Polars'
+author: 'Alier Reng'
+date: '2025-01-05'
+format: html
+---
+
+
+```{python}
+import polars as pl
+import polars.selectors as cs
+import sys 
+
+print(f'1) My system is {sys.version};\n2) Polars version is {pl.__version__}')
+```
+
+## Load the data
+
+```{python}
+# Load data; remove unwanted column; remove duplicates; tidy column names
+customer_raw = (
+    pl.read_excel('00_data/Customer Call List.xlsx')
+    .select(pl.all().exclude(['Not_Useful_Column']))
+    .unique()
+    .rename(lambda col: col.lower().replace(' ', '_'))
+)
+
+# Inspect output 
+print(customer_raw)
+```
+
+## Clean and transform data
+
+```{python}
+# Clean and transform last_name, paying_customer, do_not_contact, and address columns
+customer = (
+    customer_raw
+    .with_columns(cs.string().str.to_titlecase())
+    .with_columns(
+        last_name=pl.col('last_name').str.replace(r'\...|/|_| ', ''),
+        paying_customer=pl.when(pl.col('paying_customer').is_in(['Y', 'Ye'])).then(pl.lit('Yes'))
+        .when(pl.col('paying_customer').is_in(['N'])).then(pl.lit('No'))
+        .otherwise(pl.col('paying_customer')),
+        do_not_contact=pl.when(pl.col('do_not_contact').is_in(['Y', 'Ye'])).then(pl.lit('Yes'))
+        .when(pl.col('do_not_contact').is_in(['N'])).then(pl.lit('No'))
+        .otherwise(pl.col('do_not_contact'))
+    )
+    .with_columns(
+        pl.col('address').str.split_exact(',', 2)
+        .struct.rename_fields(['street_address', 'state', 'zip_code']).alias('fields')
+    )
+    .unnest('fields')
+    .sort('customerid', descending=False)
+)
+
+# Inspect output
+print(customer.head())
+```
+
+```{python}
+# Clean and transform phone_number column
+# Define a function to clean and format phone numbers
+def clean_phone_number(phone_number):
+    # Check if the phone number has 10 digits
+    if len(phone_number) == 10:
+        # Format the phone number as xxx-xxx-xxxx
+        return f'{phone_number[:3]}-{phone_number[3:6]}-{phone_number[6:]}'
+    else:
+        # Return None for invalid phone numbers
+        return None
+
+# Pattern to remove
+phone_pattern = r'[a-zA-Z\-\|/]'
+clean_customer_list = (
+    customer    
+    .with_columns(phone_number=pl.col('phone_number').str.replace_all(phone_pattern, '') )
+    .with_columns(phone_number=pl.col('phone_number').map_elements(clean_phone_number, return_dtype=pl.String))
+    .filter(pl.col('phone_number').is_not_null(), pl.col('do_not_contact') != 'Yes')
+)
+
+# Inspect output
+print(clean_customer_list)
+```
+
+
+
+

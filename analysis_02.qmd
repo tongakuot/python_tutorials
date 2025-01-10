@@ -7,8 +7,7 @@ editor: visual
 
 ## CODE CHALLENGE - PART 2
 
-This tutorial will teach you how to solve the same problem in R and Python.
-This is a mini-code by Arkadi.
+This tutorial will teach you how to solve the same problem in R and Python. This is a mini-code by Arkadi.
 
 ## Importing Libraries
 

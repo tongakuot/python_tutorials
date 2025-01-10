@@ -8,9 +8,6 @@ jupyter: python3
 ---
 
 ```{python}
-%pip install pyarrow
-```
-```{python}
 #| message: false
 #| warning: false
 
@@ -33,8 +30,8 @@ nan_strings = [
 # -------------------
 customer_raw = (
   pd.read_excel(
-    '../00_data/Customer Call List.xlsx',
-    dtype_backend='pyarrow',
+    '00_data/Customer Call List.xlsx',
+    # dtype_backend='pyarrow',
     na_values=nan_strings
   )
   # Clean columns names
@@ -54,7 +51,7 @@ labels = {'Y': 'Yes','YES':'Yes', 'YE':'Yes', 'N': 'No', 'NO':'No'}
 # Define a function to clean and format phone numbers
 def clean_phone_number(phone):
     # Convert the value to a string, and then remove non-alphanumeric characters
-    #phone = re.sub(r'[^a-zA-Z0-9]', '', str(phone))
+    # phone = re.sub(r'[^a-zA-Z0-9]', '', str(phone))
     phone = re.sub(r'\D', '', str(phone))
     
     # Check if the phone number has 10 digits
@@ -80,22 +77,25 @@ customer_df = (
   # Clean and transform column values
   customer_raw  
   .rename(columns={'customerid': 'customer_id'})
+   # Delete unwanted column
+  .drop(columns=['not_useful_column'])
+  .drop_duplicates()  
   .assign(
-    last_name=lambda x: x['last_name'].str.strip('/|...|_').str.strip(' '),
+    last_name=lambda x: x['last_name'].str.strip(r'/|...|_').str.strip(' '),
     paying_customer=lambda x: x['paying_customer'].replace(labels),
     do_not_contact=lambda x: x['do_not_contact'].replace(labels),
     phone_number=lambda x: x['phone_number'].apply(clean_phone_number)
   )
   # Split address column into: Street Address, State, and Zip Code
   .pipe(clean_address)
-  # Delete unwanted column
-  .drop(columns=['not_useful_column', 'address'])
-  .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
+  # # Delete unwanted column
+  .drop(columns=['address'])
+  .query('do_not_contact != "Yes" & ~phone_number.isna()')
   .reset_index(drop=True)
 )
 
 # Inspecting the first 5 rows
-customer_df.head()
+customer_df
 ```
 
 
@@ -125,9 +125,10 @@ customer = (
   .pipe(clean_address)
   # Delete unwanted column
   .drop(columns=['not_useful_column', 'address'])
-  .query('~(do_not_contact == "Yes" | do_not_contact.isna()) & ~phone_number.isna()')
+  .query('~((do_not_contact == "Yes") & (phone_number.isna()))')
   .rename(columns={'customerid': 'customer_id'})
   .reset_index(drop=True)
+  .drop_duplicates(subset=['customer_id'])
 )
 
 # Inspecting the first 5 rows
@@ -221,7 +222,7 @@ def tweak_customer_call_data(df, labels, column_names):
         .pipe(clean_address)
         # Delete unwanted columns
         .drop(columns=['not_useful_column', 'address'])
-        .query('~(do_not_contact == "yes" | do_not_contact.isna() | phone_number.isna())')
+        .query('do_not_contact != "yes" & ~phone_number.isna()')
         .rename(columns=column_names)
         .reset_index(drop=True)
     )
@@ -233,12 +234,12 @@ def tweak_customer_call_data(df, labels, column_names):
 labels = {'y': 'yes', 'ye':'yes', 'n': 'no'}
 column_names = {'customerid': 'customer_id'}
 df = tweak_customer_call_data(customer_raw, labels, column_names)
-df.head()
+df
 ```
 
 
 ```{python}
-# Load the Module
+|}# Load the Module
 import custopy as cy
 
 # Make labels - updated using Andrea's suggestion
