@@ -83,5 +83,32 @@ print(clean_customer_list)
 ```
 
 
+```{python}
+import polars as pl
+import re
+
+def clean_phone_number(phone_number: str) -> str:
+    # Remove non-numeric characters
+    cleaned = re.sub(r'\D', '', str(phone_number))
+    
+    # Check if the phone number has 10 digits
+    if len(cleaned) == 10:
+        # Format the phone number as xxx-xxx-xxxx
+        return f'{cleaned[:3]}-{cleaned[3:6]}-{cleaned[6:]}'
+    else:
+        return None
+
+# Usage with Polars:
+df = (
+    customer
+    .with_columns(
+    phone_number=pl.col('phone_number').map_elements(clean_phone_number, return_dtype=pl.String)
+    )
+    .filter(pl.col('phone_number').is_not_null(), pl.col('do_not_contact') != 'Yes')
+)
+
+print(df)
+```
+
 
 
