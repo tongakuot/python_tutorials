@@ -9,6 +9,7 @@ format: html
 ```{python}
 import polars as pl
 import polars.selectors as cs
+import re
 import sys 
 
 print(f'1) My system is {sys.version};\n2) Polars version is {pl.__version__}')
@@ -84,9 +85,6 @@ print(clean_customer_list)
 
 
 ```{python}
-import polars as pl
-import re
-
 def clean_phone_number(phone_number: str) -> str:
     # Remove non-numeric characters
     cleaned = re.sub(r'\D', '', str(phone_number))
@@ -109,6 +107,5 @@ df = (
 
 print(df)
 ```
-
 
 
