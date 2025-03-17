@@ -1,0 +1,55 @@
+---
+title: "Untitled"
+format: html
+---
+
+```{python}
+import polars as pl
+import polars.selectors as cs
+```
+```{python}
+# Create a dataframe with student grades
+df = pl.DataFrame({
+    'student': ['Alier', 'Akuien', 'Ayen', 'Angeth', 'Garang', 'Atong'],
+    'mathematics': [87, 92, 76, None, 85, 91],
+    'data_science': [81, 95, 88, 79, None, 84],
+    'statistics': [90, 89, None, 83, 78, 88]
+})
+
+print('Original DataFrame:')
+print(df)
+```
+
+
+```{python}
+# Using replace_strict() to replace None values with 0
+replace_strict_df = (
+    df
+    .with_columns(
+    pl.col('mathematics').replace_strict(None, pl.col('mathematics').mean(), default=pl.col('mathematics')),
+    pl.col('data_science').replace_strict(None, pl.col('data_science').min(), default=pl.col('data_science')),
+    pl.col('statistics').replace_strict(None, pl.col('statistics').median(), default=pl.col('statistics'))
+    )
+)
+
+print(f'\nDataFrame after replacing None values with mean, min, \nand median, respectively: {replace_strict_df}')
+```
+
+
+```{python}
+# Another example: replacing specific values
+math_mapping = {None: 80, 76: 80}
+ds_mapping = {None: 80, 79: 80}
+stat_mapping = {None: 80, 78: 80}
+adjusted_grades_df = (
+    df
+    .with_columns(
+    # Replace any grade below 80 with a minimum passing grade of 80
+    pl.col('mathematics').replace_strict(math_mapping, default=pl.col('mathematics')),
+    pl.col('data_science').replace_strict(ds_mapping, default=pl.col('data_science')),
+    pl.col('statistics').replace_strict(stat_mapping, default=pl.col('statistics'))
+    )
+)
+
+print(f'\nDataFrame after adjusting grades below 80: {adjusted_grades_df}')
+```
